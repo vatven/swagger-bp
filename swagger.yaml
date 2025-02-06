@@ -1426,7 +1426,7 @@ paths:
                     example: "B2B010"
                     description: error code
 
-  /b2b/v1/onboarding/business/:business_id/fetch_details:
+  /b2b/v1/onboarding/business/:pan/fetch_details:
     get:
       summary: Check B2b id
       description: B2b id availability check
