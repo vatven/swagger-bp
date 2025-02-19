@@ -1237,14 +1237,14 @@ paths:
             schema:
               type: object
               properties:
-                check_b2b_ids:
+                b2b_ids:
                   type: array
                   items:
                     type: string
                     pattern: "^[a-zA-Z0-9 _\\.]*$"
                     example: "b2b_id_1"
               required:
-                - check_b2b_ids
+                - b2b_ids
 
       responses:
         200:
@@ -1651,19 +1651,29 @@ paths:
             schema:
               type: object
               properties:
-                # requestor_b2b_id:
-                #   type: string
-                #   pattern: "^[a-zA-Z0-9 _\\.]*$"
-                search_parameter:
-                  type: string
-                  enum: [ GSTIN, UDYAM, SHOP ESTABLISHMENT CERTIFICATE, PAN, TAN, IEC, LEI, FACTORY LICENSE NUMBER, DRUG LICENSE NUMBER, TOURISM LICENSE NUMBER, FDA, FSSAI, HEALTH AND TRADE LICENSE NUMBER, LABOR LICENSE NUMBER, BROADCASTING AND TELECOM LICENSE NUMBER, B2BID ]
-                value:
-                  type: string
-                  pattern: "^[a-zA-Z0-9 _\\.]*$"
+                business_id:
+                   type: string
+                   pattern: "^[a-zA-Z0-9 _\\.]*$"
+                   example: "ORG2258823e01f847e0a47b4e48623dc487"
+                search:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      search_parameter:
+                        type: string
+                        enum: [ GSTIN, UDYAM, SHOP ESTABLISHMENT CERTIFICATE, PAN, TAN, IEC, LEI, FACTORY LICENSE NUMBER, DRUG LICENSE NUMBER, TOURISM LICENSE NUMBER, FDA, FSSAI, HEALTH AND TRADE LICENSE NUMBER, LABOR LICENSE NUMBER, BROADCASTING AND TELECOM LICENSE NUMBER, B2BID ]
+                      value:
+                        type: string
+                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+                        example: "29AAACK6435A1Z7"
+                    required:
+                      - search_parameter
+                      - value
+
               required:
-                - requestor_b2b_id
-                - search_parameter
-                - value
+                - search
+                - business_id
 
       responses:
 
