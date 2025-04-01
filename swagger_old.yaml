@@ -11,7 +11,6 @@ tags:
   - name: Payment
     description: payment apis
   - name: Onboarding
-  - name: Tally Onboarding
   - name: Invoice
   - name: Financing
   - name: CMS
@@ -374,6 +373,10 @@ paths:
             schema:
               type: object
               properties:
+                verification_level:
+                  type: string
+                  enum: [ L1, L3, L5]
+                  description: "If empty then by default business verification will be considered as L1"
                 business_name:
                   type: string
                   pattern: "^[a-zA-Z0-9 _\\.]*$"
@@ -393,8 +396,7 @@ paths:
                 #   pattern: "^[a-zA-Z0-9 _\\.]*$"
                 default_b2b_id:
                   type: string
-                  pattern: "^[a-zA-Z0-9 _\\.]*$"
-                  example: "default_ABC"
+                  pattern: "default_ABC"
                 # mcc_code:
                 #   type: string
                 #   pattern: "^[a-zA-Z0-9 _\\.]*$"
@@ -479,15 +481,13 @@ paths:
                         example: "address line 2"
                       city:
                         type: string
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                        example: "Bengaluru"
+                        pattern: "Bengaluru"
                       state:
                         type: string
                         enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
                       country:
                         type: string
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                        example: "India"
+                        pattern: "India"
                       pincode:
                         type: string
                         pattern: "^[0-9 ]*$"
@@ -505,6 +505,7 @@ paths:
                 - business_name
                 - business_type
                 - pan
+                - type
                 - business_identifiers
                 - default_b2b_id
                 - emails
@@ -681,955 +682,6 @@ paths:
                     type: string
                     example: "B2B010"
                     description: error code
-
-  /b2b/v2/onboarding/business/create:
-    post:
-      summary: Create a new business
-      description: This endpoint is used to create a new business with relevant details.
-      tags:
-        - Tally Onboarding
-      operationId: CreateBusinessV2
-      parameters:
-        - $ref: '#/components/parameters/requestId'
-        - $ref: '#/components/parameters/appId'
-        - $ref: '#/components/parameters/appToken'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                business_id:
-                  type: string
-                  example: "ORGeadecb9c3c1e4558a65f439d6dc3348a"
-                  pattern: "^[a-zA-Z0-9 _\\.]*$"
-                business_name:
-                  type: string
-                  example: "Test v7 business Pvt. Ltd."
-                  pattern: "^[a-zA-Z0-9 _\\.]*$"
-                business_type:
-                  type: string
-                  enum: [ SOLE PROP, BOI, AOP, HUF, COMPANY, LLP, PARTNERSHIP FIRM, TRUST, GOVERNEMNT AGENCY, LOCAL AUTHORITY, AJP ]
-                pan:
-                  type: string
-                  example: "DRBPO2364L"
-                  pattern: "^[a-zA-Z0-9 _\\.]*$"
-                default_b2b_id:
-                  type: string
-                  example: "v10_default_b2b"
-                  pattern: "^[a-zA-Z0-9 _\\.]*$"
-                business_identifiers:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      is_primary:
-                        type: boolean
-                      identifier_type:
-                        type: string
-                        example: "GSTIN"
-                        enum: [ GSTIN, UDHYAM, SHOP ESTABLISHMENT CERTIFICATE, PAN, TAN, IEC, LEI, FACTORY LICENSE NUMBER, DRUG LICENSE NUMBER, TOURISM LICENSE NUMBER, FDA, FSSAI, HEALTH AND TRADE LICENSE NUMBER, LABOR LICENSE NUMBER, BROADCASTING AND TELECOM LICENSE NUMBER ]
-                      identifier_value:
-                        type: string
-                        example: "19DRBPO2364L1TU"
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                    required:
-                      - is_primary
-                      - identifier_type
-                      - identifier_value
-                contact_details:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      contact:
-                        type: string
-                        example: "new5@gmail.com"
-                      is_primary:
-                        type: boolean
-                      contact_type:
-                        type: string
-                        enum: [mobile, email]
-                    required:
-                      - contact
-                      - is_primary
-                      - contact_type
-                addresses:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      type:
-                        type: string
-                        example: "REGISTERED ADDRESS"
-                        enum: [ REGISTERED ADDRESS, CORPORATE OFFICE, BRANCH OFFICE, HEAD OFFICE, OTHER ]
-                      address_line_1:
-                        type: string
-                        example: "address line 1 new 4 test"
-                      address_line_2:
-                        type: string
-                        example: "address line 2"
-                      city:
-                        type: string
-                        example: "Bengaluru"
-                      state:
-                        type: string
-                        example: "ANDAMAN AND NICOBAR ISLANDS"
-                        enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
-                      country:
-                        type: string
-                        example: "India"
-                      pincode:
-                        type: string
-                        example: "560066"
-                bank_accounts:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      bank_account_type:
-                        type: string
-                        example: "CURRENT"
-                        enum: [ SAVINGS, CURRENT, DEFAULT, CREDIT, OVERDRAFT, LOAN, CHECKING, BANKWALLET, SOD, PPI WALLET ]
-                      ifsc:
-                        type: string
-                        example: "SBIN0030055"
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                      account_number:
-                        type: string
-                        example: "31869997222"
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                      beneficiary_name:
-                        type: string
-                        example: "sajan chouhan"
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                      is_verified:
-                        type: boolean
-
-              required:
-                - business_id
-                - business_name
-                - business_type
-                - pan
-                - default_b2b_id
-                - business_identifiers
-                - contact_details
-      responses:
-        "200":
-          description: Business successfully created
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  business_status:
-                    type: string
-                    example: "REGISTERED"
-                  business_id:
-                    type: string
-                    example: "ORGeadecb9c3c1e4558a65f439d6dc3348a"
-                  status:
-                    type: string
-                    example: "SUCCESS"
-                  verification_level:
-                    type: string
-                    example: "1"
-                  business_name:
-                    type: string
-                    example: "Test v7 business Pvt. Ltd."
-                  business_type:
-                    type: string
-                    example: "SOLE PROP"
-                  pan:
-                    type: string
-                    example: "DRBPO2364L"
-                  default_b2b_id:
-                    type: string
-                    example: "v10_default_b2b"
-                  business_identifiers:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        business_identifier_id:
-                          type: string
-                          example: "bid_fc58e4b4339e4190984cbabaefc8c043"
-                        is_primary:
-                          type: boolean
-                          example: true
-                        identifier_type:
-                          type: string
-                          example: "GSTIN"
-                        identifier_value:
-                          type: string
-                          example: "19DRBPO2364L1TU"
-                  addresses:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        address_id:
-                          type: string
-                          example: "adr_170cdf65aabf4e16911833a30d15112c"
-                        type:
-                          type: string
-                          example: "REGISTERED ADDRESS"
-                        city:
-                          type: string
-                          example: "Bengaluru"
-                        state:
-                          type: string
-                          example: "ANDAMAN AND NICOBAR ISLANDS"
-                        country:
-                          type: string
-                          example: "India"
-                        pincode:
-                          type: string
-                          example: "560066"
-                  bank_accounts:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        bank_account_id:
-                          type: string
-                          example: "acc_b4ac56ace46543be80ece024de67f724"
-                        bank_account_type:
-                          type: string
-                          example: "CURRENT"
-                        ifsc:
-                          type: string
-                          example: "SBIN0030055"
-                        account_number:
-                          type: string
-                          example: "31869997222"
-                        beneficiary_name:
-                          type: string
-                          example: "sajan chouhan"
-                  contact_details:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        contact_id:
-                          type: string
-                          example: "con_b68eb5474d0746c4bcbd1a568156f11b"
-                        contact:
-                          type: string
-                          example: "new5@gmail.com"
-                        contact_type:
-                          type: string
-                          example: "email"
-                        is_primary:
-                          type: boolean
-                          example: true
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  request_id:
-                    type: string
-                    example: "c632be1f-965f-46d8-9117-07d41b52ee37"
-                  msg:
-                    type: string
-                    example: "Business with the given pan already exists in registered status"
-                  code:
-                    type: string
-                    example: "B2B027"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  msg:
-                    type: string
-                    example: "Internal server error"
-
-  /b2b/v2/onboarding/business/edit:
-    post:
-      summary: Edit a new business
-      description: This endpoint is used to create a new business with relevant details.
-      tags:
-        - Tally Onboarding
-      operationId: EditBusinessV2
-      parameters:
-        - $ref: '#/components/parameters/requestId'
-        - $ref: '#/components/parameters/appId'
-        - $ref: '#/components/parameters/appToken'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                business_id:
-                  type: string
-                  example: "ORGeadecb9c3c1e4558a65f439d6dc3348a"
-                  pattern: "^[a-zA-Z0-9 _\\.]*$"
-                business_name:
-                  type: string
-                  example: "Test v7 business Pvt. Ltd."
-                  pattern: "^[a-zA-Z0-9 _\\.]*$"
-                business_type:
-                  type: string
-                  enum: [ SOLE PROP, BOI, AOP, HUF, COMPANY, LLP, PARTNERSHIP FIRM, TRUST, GOVERNEMNT AGENCY, LOCAL AUTHORITY, AJP ]
-                pan:
-                  type: string
-                  example: "DRBPO2364L"
-                  pattern: "^[a-zA-Z0-9 _\\.]*$"
-                default_b2b_id:
-                  type: string
-                  example: "v10_default_b2b"
-                  pattern: "^[a-zA-Z0-9 _\\.]*$"
-                business_identifiers:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      is_primary:
-                        type: boolean
-                      identifier_type:
-                        type: string
-                        example: "GSTIN"
-                        enum: [ GSTIN, UDHYAM, SHOP ESTABLISHMENT CERTIFICATE, PAN, TAN, IEC, LEI, FACTORY LICENSE NUMBER, DRUG LICENSE NUMBER, TOURISM LICENSE NUMBER, FDA, FSSAI, HEALTH AND TRADE LICENSE NUMBER, LABOR LICENSE NUMBER, BROADCASTING AND TELECOM LICENSE NUMBER ]
-                      identifier_value:
-                        type: string
-                        example: "19DRBPO2364L1TU"
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                    required:
-                      - is_primary
-                      - identifier_type
-                      - identifier_value
-                contact_details:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      contact:
-                        type: string
-                        example: "new5@gmail.com"
-                      is_primary:
-                        type: boolean
-                      contact_type:
-                        type: string
-                        enum: [mobile, email]
-                    required:
-                      - contact
-                      - is_primary
-                      - contact_type
-                addresses:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      type:
-                        type: string
-                        example: "REGISTERED ADDRESS"
-                        enum: [ REGISTERED ADDRESS, CORPORATE OFFICE, BRANCH OFFICE, HEAD OFFICE, OTHER ]
-                      address_line_1:
-                        type: string
-                        example: "address line 1 new 4 test"
-                      address_line_2:
-                        type: string
-                        example: "address line 2"
-                      city:
-                        type: string
-                        example: "Bengaluru"
-                      state:
-                        type: string
-                        example: "ANDAMAN AND NICOBAR ISLANDS"
-                        enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
-                      country:
-                        type: string
-                        example: "India"
-                      pincode:
-                        type: string
-                        example: "560066"
-                bank_accounts:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      bank_account_type:
-                        type: string
-                        example: "CURRENT"
-                        enum: [ SAVINGS, CURRENT, DEFAULT, CREDIT, OVERDRAFT, LOAN, CHECKING, BANKWALLET, SOD, PPI WALLET ]
-                      ifsc:
-                        type: string
-                        example: "SBIN0030055"
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                      account_number:
-                        type: string
-                        example: "31869997222"
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                      beneficiary_name:
-                        type: string
-                        example: "sajan chouhan"
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                      is_verified:
-                        type: boolean
-
-              required:
-                - business_id
-                - business_name
-                - business_type
-                - pan
-                - default_b2b_id
-                - business_identifiers
-                - contact_details
-      responses:
-        "200":
-          description: Business successfully created
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  business_status:
-                    type: string
-                    example: "REGISTERED"
-                  business_id:
-                    type: string
-                    example: "ORGeadecb9c3c1e4558a65f439d6dc3348a"
-                  status:
-                    type: string
-                    example: "SUCCESS"
-                  verification_level:
-                    type: string
-                    example: "1"
-                  business_name:
-                    type: string
-                    example: "Test v7 business Pvt. Ltd."
-                  business_type:
-                    type: string
-                    example: "SOLE PROP"
-                  pan:
-                    type: string
-                    example: "DRBPO2364L"
-                  default_b2b_id:
-                    type: string
-                    example: "v10_default_b2b"
-                  business_identifiers:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        business_identifier_id:
-                          type: string
-                          example: "bid_fc58e4b4339e4190984cbabaefc8c043"
-                        is_primary:
-                          type: boolean
-                          example: true
-                        identifier_type:
-                          type: string
-                          example: "GSTIN"
-                        identifier_value:
-                          type: string
-                          example: "19DRBPO2364L1TU"
-                  addresses:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        address_id:
-                          type: string
-                          example: "adr_170cdf65aabf4e16911833a30d15112c"
-                        type:
-                          type: string
-                          example: "REGISTERED ADDRESS"
-                        city:
-                          type: string
-                          example: "Bengaluru"
-                        state:
-                          type: string
-                          example: "ANDAMAN AND NICOBAR ISLANDS"
-                        country:
-                          type: string
-                          example: "India"
-                        pincode:
-                          type: string
-                          example: "560066"
-                  bank_accounts:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        bank_account_id:
-                          type: string
-                          example: "acc_b4ac56ace46543be80ece024de67f724"
-                        bank_account_type:
-                          type: string
-                          example: "CURRENT"
-                        ifsc:
-                          type: string
-                          example: "SBIN0030055"
-                        account_number:
-                          type: string
-                          example: "31869997222"
-                        beneficiary_name:
-                          type: string
-                          example: "sajan chouhan"
-                  contact_details:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        contact_id:
-                          type: string
-                          example: "con_b68eb5474d0746c4bcbd1a568156f11b"
-                        contact:
-                          type: string
-                          example: "new5@gmail.com"
-                        contact_type:
-                          type: string
-                          example: "email"
-                        is_primary:
-                          type: boolean
-                          example: true
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  request_id:
-                    type: string
-                    example: "c632be1f-965f-46d8-9117-07d41b52ee37"
-                  msg:
-                    type: string
-                    example: "Business with the given pan already exists in registered status"
-                  code:
-                    type: string
-                    example: "B2B027"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  msg:
-                    type: string
-                    example: "Internal server error"
-
-  /b2b/v2/onboarding/business/check:
-    post:
-      summary: Check if business exists
-      description: This endpoint is used to check a if business exists with relevant details.
-      tags:
-        - Tally Onboarding
-      operationId: CheckBusiness
-      parameters:
-        - $ref: '#/components/parameters/requestId'
-        - $ref: '#/components/parameters/appId'
-        - $ref: '#/components/parameters/appToken'
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                identifier_type:
-                  type: string
-                  enum: [ GSTIN, UDHYAM, SHOP ESTABLISHMENT CERTIFICATE, PAN, TAN, IEC, LEI, FACTORY LICENSE NUMBER, DRUG LICENSE NUMBER, TOURISM LICENSE NUMBER, FDA, FSSAI, HEALTH AND TRADE LICENSE NUMBER, LABOR LICENSE NUMBER, BROADCASTING AND TELECOM LICENSE NUMBER ]
-                identifier_value:
-                  type: string
-                  example: "19EIYPJ9167L1TU"
-                  pattern: "^[a-zA-Z0-9 _\\.]*$"
-                business_name:
-                  type: string
-                  example: "Test Draft Business"
-                  pattern: "^[a-zA-Z0-9 _\\.]*$"
-                business_type:
-                  type: string
-                  enum: [ SOLE PROP, BOI, AOP, HUF, COMPANY, LLP, PARTNERSHIP FIRM, TRUST, GOVERNEMNT AGENCY, LOCAL AUTHORITY, AJP ]
-              required:
-                - identifier_type
-                - identifier_value
-      responses:
-        "200":
-          description: Business successfully created
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  business_status:
-                    type: string
-                    example: "REGISTERED"
-                  business_id:
-                    type: string
-                    example: "ORGeadecb9c3c1e4558a65f439d6dc3348a"
-                  status:
-                    type: string
-                    example: "SUCCESS"
-                  verification_level:
-                    type: string
-                    example: "1"
-                  business_name:
-                    type: string
-                    example: "Test v7 business Pvt. Ltd."
-                  business_type:
-                    type: string
-                    example: "SOLE PROP"
-                  pan:
-                    type: string
-                    example: "DRBPO2364L"
-                  default_b2b_id:
-                    type: string
-                    example: "v10_default_b2b"
-                  business_identifiers:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        business_identifier_id:
-                          type: string
-                          example: "bid_fc58e4b4339e4190984cbabaefc8c043"
-                        is_primary:
-                          type: boolean
-                          example: true
-                        identifier_type:
-                          type: string
-                          example: "GSTIN"
-                        identifier_value:
-                          type: string
-                          example: "19DRBPO2364L1TU"
-                  addresses:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        address_id:
-                          type: string
-                          example: "adr_170cdf65aabf4e16911833a30d15112c"
-                        type:
-                          type: string
-                          example: "REGISTERED ADDRESS"
-                        city:
-                          type: string
-                          example: "Bengaluru"
-                        state:
-                          type: string
-                          example: "ANDAMAN AND NICOBAR ISLANDS"
-                        country:
-                          type: string
-                          example: "India"
-                        pincode:
-                          type: string
-                          example: "560066"
-                  bank_accounts:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        bank_account_id:
-                          type: string
-                          example: "acc_b4ac56ace46543be80ece024de67f724"
-                        bank_account_type:
-                          type: string
-                          example: "CURRENT"
-                        ifsc:
-                          type: string
-                          example: "SBIN0030055"
-                        account_number:
-                          type: string
-                          example: "31869997222"
-                        beneficiary_name:
-                          type: string
-                          example: "sajan chouhan"
-                  contact_details:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        contact_id:
-                          type: string
-                          example: "con_b68eb5474d0746c4bcbd1a568156f11b"
-                        contact:
-                          type: string
-                          example: "new5@gmail.com"
-                        contact_type:
-                          type: string
-                          example: "email"
-                        is_primary:
-                          type: boolean
-                          example: true
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  request_id:
-                    type: string
-                    example: "c632be1f-965f-46d8-9117-07d41b52ee37"
-                  msg:
-                    type: string
-                    example: "Business with the given pan already exists in registered status"
-                  code:
-                    type: string
-                    example: "B2B027"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  msg:
-                    type: string
-                    example: "Internal server error"
-
-  /b2b/v1/trigger/otp/email:
-    post:
-      tags:
-        - Tally Onboarding
-      operationId: TriggerEmailOTP
-      parameters:
-        - $ref: '#/components/parameters/requestId'
-        - $ref: '#/components/parameters/appId'
-        - $ref: '#/components/parameters/appToken'
-      summary: Trigger OTP for email
-      description: |
-        Triggers an OTP to be sent via email to a specific email address.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                business_id:
-                  type: string
-                  description: The ID of the business associated with the email address.
-                  example: ORG92d3d5d4a9bd4c159be343077eef382b
-                email:
-                  type: string
-                  format: email
-                  description: The email address to send the OTP to.
-                  example: "akshat.garg.0492@gmail.com"
-                  pattern: ^[A-Za-z0-9._%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$
-                is_primary:
-                  type: boolean
-                  description: Whether the email address is primary or not.
-                  example: false
-      responses:
-        "200":
-          description: Business successfully created
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  business_id:
-                    type: string
-                  email:
-                    type: string
-                  msg:
-                    type: string
-                  status:
-                    type: string
-                  code:
-                    type: string
-                  token:
-                    type: string
-
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  request_id:
-                    type: string
-                    example: "c632be1f-965f-46d8-9117-07d41b52ee37"
-                  msg:
-                    type: string
-                    example: "business not found"
-                  code:
-                    type: string
-                    example: "B2B056"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  msg:
-                    type: string
-                    example: "Internal server error"
-
-  /b2b/v1/trigger/otp/mobile:
-    post:
-      tags:
-        - Tally Onboarding
-      operationId: TriggerMobileOTP
-      parameters:
-        - $ref: '#/components/parameters/requestId'
-        - $ref: '#/components/parameters/appId'
-        - $ref: '#/components/parameters/appToken'
-      summary: Trigger OTP for mobile
-      description: |
-        Triggers an OTP to be sent via email to a specific email address.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                business_id:
-                  type: string
-                  description: The ID of the business associated with the email address.
-                  example: ORG92d3d5d4a9bd4c159be343077eef382b
-                email:
-                  type: string
-                  format: email
-                  description: The mobile number to send the OTP to.
-                  example: "9408956366"
-                  pattern: ^\+?[0-9]{5,15}$
-                is_primary:
-                  type: boolean
-                  description: Whether the mobile number is primary or not.
-                  example: false
-      responses:
-        "200":
-          description: Business successfully created
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  business_id:
-                    type: string
-                  email:
-                    type: string
-                  msg:
-                    type: string
-                  status:
-                    type: string
-                  code:
-                    type: string
-                  token:
-                    type: string
-
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  request_id:
-                    type: string
-                    example: "c632be1f-965f-46d8-9117-07d41b52ee37"
-                  msg:
-                    type: string
-                    example: "business not found"
-                  code:
-                    type: string
-                    example: "B2B056"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  msg:
-                    type: string
-                    example: "Internal server error"
-
-  /b2b/v1/verify/otp:
-    post:
-      tags:
-        - Tally Onboarding
-      operationId: VerifyOTP
-      parameters:
-        - $ref: '#/components/parameters/requestId'
-        - $ref: '#/components/parameters/appId'
-        - $ref: '#/components/parameters/appToken'
-      summary: Trigger OTP for mobile
-      description: Verify the OTP provided by the user for authentication.
-      requestBody:
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                business_id:
-                  type: string
-                  description: The unique identifier for the business.
-                  example: ORG92d3d5d4a9bd4c159be343077eef382b
-                token:
-                  type: string
-                  description: The authentication token provided by the user.
-                  example: 39079406c2be95589690e1ff0b8277b18ddab361646cf7175522b80eee9589d5
-                otp:
-                  type: string
-                  description: The one-time password provided by the user.
-                  example: 180466
-      responses:
-        "200":
-          description: Business successfully created
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  business_id:
-                    type: string
-                  msg:
-                    type: string
-                  status:
-                    type: string
-                  code:
-                    type: string
-                  token:
-                    type: string
-                  otp:
-                    type: string
-
-        "400":
-          description: Bad request
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  request_id:
-                    type: string
-                    example: "c632be1f-965f-46d8-9117-07d41b52ee37"
-                  msg:
-                    type: string
-                    example: "business not found"
-                  code:
-                    type: string
-                    example: "B2B056"
-        "500":
-          description: Internal server error
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  msg:
-                    type: string
-                    example: "Internal server error"
 
   /b2b/v1/onboarding/business/add_address:
     post:
@@ -2172,7 +1224,7 @@ paths:
       summary: Check B2b id
       description: B2b id availability check
       tags:
-        - Tally Onboarding
+        - Onboarding
       operationId: CheckB2bId
       parameters:
         - $ref: '#/components/parameters/requestId'
@@ -2310,7 +1362,7 @@ paths:
       summary: Business status change
       description: Business status change
       tags:
-        - Tally Onboarding
+        - Onboarding
       operationId: BusinessStatusChange
       parameters:
         - $ref: '#/components/parameters/requestId'
@@ -2374,7 +1426,7 @@ paths:
                     example: "B2B010"
                     description: error code
 
-  /b2b/v1/onboarding/business/:business_id/fetch_details:
+  /b2b/v1/onboarding/business/:pan/fetch_details:
     get:
       summary: Check B2b id
       description: B2b id availability check
@@ -2599,19 +1651,29 @@ paths:
             schema:
               type: object
               properties:
-                # requestor_b2b_id:
-                #   type: string
-                #   pattern: "^[a-zA-Z0-9 _\\.]*$"
-                search_parameter:
-                  type: string
-                  enum: [ GSTIN, UDYAM, SHOP ESTABLISHMENT CERTIFICATE, PAN, TAN, IEC, LEI, FACTORY LICENSE NUMBER, DRUG LICENSE NUMBER, TOURISM LICENSE NUMBER, FDA, FSSAI, HEALTH AND TRADE LICENSE NUMBER, LABOR LICENSE NUMBER, BROADCASTING AND TELECOM LICENSE NUMBER, B2BID ]
-                value:
+                business_id:
                   type: string
                   pattern: "^[a-zA-Z0-9 _\\.]*$"
+                  example: "ORG2258823e01f847e0a47b4e48623dc487"
+                search:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      search_parameter:
+                        type: string
+                        enum: [ GSTIN, UDYAM, SHOP ESTABLISHMENT CERTIFICATE, PAN, TAN, IEC, LEI, FACTORY LICENSE NUMBER, DRUG LICENSE NUMBER, TOURISM LICENSE NUMBER, FDA, FSSAI, HEALTH AND TRADE LICENSE NUMBER, LABOR LICENSE NUMBER, BROADCASTING AND TELECOM LICENSE NUMBER, B2BID ]
+                      value:
+                        type: string
+                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+                        example: "29AAACK6435A1Z7"
+                    required:
+                      - search_parameter
+                      - value
+
               required:
-                - requestor_b2b_id
-                - search_parameter
-                - value
+                - search
+                - business_id
 
       responses:
 
@@ -2639,78 +1701,6 @@ paths:
                           type: array
                           items:
                             type: string
-
-        400:
-          description: unable to make req pay
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  request_id:
-                    type: string
-                    example: "3ab43aa0-7187-44b1-8371-5fa448841da3"
-                    description: request id
-                  message:
-                    type: string
-                    example: "webhook not received from central unit"
-                    description: error message
-                  code:
-                    type: string
-                    example: "B2B010"
-                    description: error code
-
-  /b2b/v1/business/search:
-    post:
-      summary: Fetch Public Details of Business
-      description: Fetch Public Details of Business
-      tags:
-        - Tally Onboarding
-      operationId: SearchBusinessV2
-      parameters:
-        - $ref: '#/components/parameters/requestId'
-        - $ref: '#/components/parameters/appId'
-      requestBody:
-        description: Data from V2
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                business_id:
-                  type: string
-                  description: The ID of the business to which the search should be limited.
-                search:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      search_parameter:
-                        type: string
-                        enum: [ GSTIN, UDYAM, SHOP ESTABLISHMENT CERTIFICATE, PAN, TAN, IEC, LEI, FACTORY LICENSE NUMBER, DRUG LICENSE NUMBER, TOURISM LICENSE NUMBER, FDA, FSSAI, HEALTH AND TRADE LICENSE NUMBER, LABOR LICENSE NUMBER, BROADCASTING AND TELECOM LICENSE NUMBER, B2BID ]
-                        description: The name of the search parameter.
-                      value:
-                        type: string
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                        example: "06AAKCA6445Q1Z2"
-                        description: The value of the search parameter.
-                    required:
-                      - search_parameter
-                      - value
-
-              required:
-                - business_id
-                - search
-
-      responses:
-
-        200:
-          description: Business Info
-          content:
-            application/json:
-              schema:
-                $ref: '#/components/schemas/BusinessInfo'
 
         400:
           description: unable to make req pay
@@ -2830,11 +1820,11 @@ paths:
                     #   pattern: "^[a-zA-Z0-9]*$"
                     b2b_id:
                       type: string
-                    # gstin:
-                    #   type: string
-                    #   pattern: "^[a-zA-Z0-9]*$"
-                    # legal_name:
-                    #   type: string
+                    gstin:
+                      type: string
+                      pattern: "^[a-zA-Z0-9]*$"
+                    legal_name:
+                      type: string
                     # trade_name:
                     #   type: string
                     state_code:
@@ -2949,8 +1939,6 @@ paths:
 
               required:
                 - supplier_invoice_number
-                - einvoice
-                - transaction_details
                 - supplier_details
                 - item_lists
                 - value_details
@@ -4846,19 +3834,24 @@ paths:
                 note_number:
                   type: string
                   pattern: ^([^\"]){1,50}$
+                  example: "HPY/CDN/12321"
                 invoice_id:
                   type: string
                   pattern: "^[a-zA-Z0-9 ]*$"
+                  example: "INV123e3314242837e647"
                   description: invoice id
                 einvoice:
                   type: object
+                  description: "required in case of e-invoice"
                   properties:
                     irn:
                       type: string
                       pattern: "^[a-zA-Z0-9 _\\.]*$"
+                      example: "5F3AE5C54A7ED54452C1548754A1C454854AC545154AC54545"
                     irn_time_stamp:
                       type: string
                       pattern: "^[a-zA-Z0-9 _\\.]*$"
+                      example: ""
                   required:
                     - irn
                 transaction_details:
@@ -4867,27 +3860,39 @@ paths:
                     tax_scheme:
                       type: string
                       pattern: "^[a-zA-Z0-9 _\\.]*$"
+                      enum: [GST]
                     supply_type:
                       type: string
                       pattern: "^[a-zA-Z0-9 _\\.]*$"
+                      enum: [ B2B, SEZWP, SEZWOP, EXPWP, DEXP, B2C ]
                     reverse_charge_tax:
                       type: string
                       pattern: "^[a-zA-Z0-9 _\\.]*$"
+                      enum: [ YES, NO ]
                     ecommerce_gstin:
                       type: string
                       pattern: "^[a-zA-Z0-9 _\\.]*$"
+                      example: "22AAAAA0000A1Z5"
                     igst_chargable:
                       type: string
                       pattern: "^[a-zA-Z0-9 _\\.]*$"
+                      enum: [ YES, NO ]
+                  required:
+                    - tax_scheme
+                    - supply_type
                 value_details:
                   type: object
                   properties:
                     assessment_value:
                       type: number
                       format: float
-                    total_note_value:
+                      example: 20
+                      description: "total value of line items"
+                    total_invoice_value:
                       type: number
                       format: float
+                      example: 80
+                      description: "if invoice is 100 INR and credit note is 20 INR then total invoice value will be 80 INR"
                   required:
                     - assessment_value
                     - total_note_value
@@ -4912,120 +3917,140 @@ paths:
                 supplier_details:
                   type: object
                   properties:
-                    ifsc:
-                      type: string
-                      pattern: "^[a-zA-Z0-9 _\\.]*$"
-                    masked_account_number:
-                      type: string
-                      pattern: "^[0-9]*$"
-                    beneficiary_name:
-                      type: string
-                    businessVPA:
-                      type: string
-                      pattern: "^[a-zA-Z0-9]*$"
+                    # ifsc:
+                    #   type: string
+                    #   pattern: "^[a-zA-Z0-9 _\\.]*$"
+                    # masked_account_number:
+                    #   type: string
+                    #   pattern: "^[0-9]*$"
+                    #   example: ""
+                    # beneficiary_name:
+                    #   type: string
+                    #   example: "akshat"
+                    # businessVPA:
+                    #   type: string
+                    #   pattern: "^[a-zA-Z0-9]*$"
+                    #   example: "SBIN54321"
                     b2b_id:
                       type: string
-                    gstin:
-                      type: string
-                      pattern: "^[a-zA-Z0-9]*$"
-                    legal_name:
-                      type: string
-                    trade_name:
-                      type: string
+                      example: "supplier_b2b_id"
+                    # gstin:
+                    #   type: string
+                    #   pattern: "^[a-zA-Z0-9]*$"
+                    #   example: "22AAAAA0000A1Z5"
+                    # legal_name:
+                    #   type: string
+                    #   example: "vatech ventures pvt ltd"
+                    # trade_name:
+                    #   type: string
+                    #   example: "vatech"
                     state_code:
                       type: string
                       pattern: "^[a-zA-Z0-9]*$"
-                    email:
+                      example: "07"
+                    # email:
+                    #   type: string
+                    #   example : "acd@gmail.com"
+                    address_id:
                       type: string
-                    address:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                        address_line1:
-                          type: string
-                        address_line2:
-                          type: string
-                        city:
-                          type: string
-                          pattern: "^[a-zA-Z0-9 _\\.]*$"
-                        state:
-                          type: string
-                          enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
-                        country:
-                          type: string
-                          pattern: "^[a-zA-Z]*$"
-                        pincode:
-                          type: string
-                          pattern: "^[0-9]*$"
-                    contact_number:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                        country_code:
-                          type: string
-                        phone_number:
-                          type: string
-                          pattern: "^[0-9]*$"
+                      pattern: "^[a-zA-Z0-9]*$"
+                      example: "adr_24387rt38eys234ue93745873edyh"
+                    #   properties:
+                    #     type:
+                    #       type: string
+                    #     address_line1:
+                    #       type: string
+                    #     address_line2:
+                    #       type: string
+                    #     city:
+                    #       type: string
+                    #       pattern: "^[a-zA-Z0-9 _\\.]*$"
+                    #     state:
+                    #       type: string
+                    #       enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
+                    #     country:
+                    #       type: string
+                    #       pattern: "^[a-zA-Z]*$"
+                    #     pincode:
+                    #       type: string
+                    #       pattern: "^[0-9]*$"
+                    # contact_number:
+                    #   type: object
+                    #   properties:
+                    #     type:
+                    #       type: string
+                    #     country_code:
+                    #       type: string
+                    #     phone_number:
+                    #       type: string
+                    #       pattern: "^[0-9]*$"
+                  required:
+                    - b2b_id
                 buyer_details:
                   type: object
                   properties:
                     place_of_supply:
                       type: string
-                    masked_account_number:
-                      type: string
-                      pattern: "^[0-9]*$"
-                    beneficiary_name:
-                      type: string
-                    businessVPA:
-                      type: string
-                      pattern: "^[a-zA-Z0-9]*$"
+                      description: "state code of place of supply. If place of supply is outside India, it should be 96"
+                      example: "07"
+                    # masked_account_number:
+                    #   type: string
+                    #   pattern: "^[0-9]*$"
+                    # beneficiary_name:
+                    #   type: string
+                    # businessVPA:
+                    #   type: string
+                    #   pattern: "^[a-zA-Z0-9]*$"
                     b2b_id:
                       type: string
-                    gstin:
-                      type: string
-                      pattern: "^[a-zA-Z0-9]*$"
-                    legal_name:
-                      type: string
-                    trade_name:
-                      type: string
+                      example: "buyer_b2b_id"
+                    # gstin:
+                    #   type: string
+                    #   pattern: "^[a-zA-Z0-9]*$"
+                    # legal_name:
+                    #   type: string
+                    # trade_name:
+                    #   type: string
                     state_code:
                       type: string
                       pattern: "^[a-zA-Z0-9]*$"
-                    email:
+                      example: "07"
+                    # email:
+                    #   type: string
+                    address_id:
                       type: string
-                    address:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                        address_line1:
-                          type: string
-                        address_line2:
-                          type: string
-                        city:
-                          type: string
-                          pattern: "^[a-zA-Z0-9 _\\.]*$"
-                        state:
-                          type: string
-                          enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
-                        country:
-                          type: string
-                          pattern: "^[a-zA-Z]*$"
-                        pincode:
-                          type: string
-                          pattern: "^[0-9]*$"
-                    contact_number:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                        country_code:
-                          type: string
-                        phone_number:
-                          type: string
-                          pattern: "^[0-9]*$"
+                      example: "adr_24387rt38eys234ue93745873edyh"
+                    #   properties:
+                    #     type:
+                    #       type: string
+                    #     address_line1:
+                    #       type: string
+                    #     address_line2:
+                    #       type: string
+                    #     city:
+                    #       type: string
+                    #       pattern: "^[a-zA-Z0-9 _\\.]*$"
+                    #     state:
+                    #       type: string
+                    #       enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
+                    #     country:
+                    #       type: string
+                    #       pattern: "^[a-zA-Z]*$"
+                    #     pincode:
+                    #       type: string
+                    #       pattern: "^[0-9]*$"
+                    # contact_number:
+                    #   type: object
+                    #   properties:
+                    #     type:
+                    #       type: string
+                    #     country_code:
+                    #       type: string
+                    #     phone_number:
+                    #       type: string
+                    #       pattern: "^[0-9]*$"
+                  required:
+                    - b2b_id
                 item_lists:
                   type: array
                   items:
@@ -5034,34 +4059,94 @@ paths:
                       serial_no:
                         type: string
                         pattern: "^[a-zA-Z0-9 _\\.]*$"
+                        example: "12323e3432123"
                         description: serial number
                       product_description:
                         type: string
+                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+                        example: "description of the product"
                       is_service:
                         type: string
+                        enum: [YES, NO]
                       hsn_code:
                         type: string
+                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+                        example: "15180040"
+                        description: "mandatory if e-invoice"
                       quantity:
-                        type: string
+                        type: number
+                        format: float
+                        example: 4
                       free_quantity:
-                        type: string
-                      unit:
-                        type: string
+                        type: number
+                        format: float
+                        example: 0
+                      # unit:
+                      #   type: string
                       unit_price:
                         type: number
                         format: float
+                        example: 10
                       total_amt:
                         type: number
                         format: float
+                        example: 40
+                        description: "quantity * unit_price"
                       assessment_amount:
                         type: number
                         format: float
+                        description: "Assessable value (Total Amount - Discount)"
+                        example: 20
                       gst_rate:
                         type: number
                         format: float
+                        description: "mandatory if e-invoice"
                       total_item_value:
                         type: number
                         format: float
+                        example: 20
+                        description: "Total item value = Assessable amount + CGST + SGST + CESS + CESNONADVL Amt + State CES Amt + State CES NON ADVL Amt + Other charges"
+                      other_taxes:
+                        type: array
+                        items:
+                          type: object
+                          properties:
+                            name:
+                              type: string
+                              pattern: "^[a-zA-Z0-9 _\\.]*$"
+                              example: "CGST"
+                            rate:
+                              type: number
+                              format: float
+                            amount:
+                              type: number
+                              format: float
+                          required:
+                            - name
+                            - rate
+                            - amount
+                      discounts:
+                        type: object
+                        properties:
+                          rate:
+                            type: number
+                            format: float
+                            example: 50
+                          amount:
+                            type: number
+                            format: float
+                            example: 20
+                        required:
+                          - rate
+                          - amount
+                    required:
+                      - serial_no
+                      - is_service
+                      - unit_price
+                      - total_amt
+                      - assessment_amount
+                      - total_item_value
+                      - quantity
 
               required:
                 - note_type
@@ -5562,70 +4647,6 @@ paths:
                     description: error code
 
 components:
-  schemas:
-    BusinessInfo:
-      type: object
-      properties:
-        business_id:
-          type: string
-        msg:
-          type: string
-        code:
-          type: string
-        status:
-          type: string
-        business_info:
-          type: array
-          items:
-            $ref: '#/components/schemas/BusinessInfoDetails'
-    BusinessInfoDetails:
-      type: object
-      properties:
-        search_parameter:
-          type: string
-        search_result:
-          type: string
-        name:
-          type: string
-        alias:
-          type: string
-        mcc_code:
-          type: string
-        state:
-          type: string
-        pincode:
-          type: string
-        entity_status:
-          type: string
-        verification_level:
-          type: string
-        public_b2b_ids:
-          type: array
-          items:
-            $ref: '#/components/schemas/BusinessInfoDetails'
-        b2b_Id_details:
-          type: array
-          items:
-            $ref: '#/components/schemas/B2bIdDetails'
-
-    B2bIdDetails:
-      type: object
-      properties:
-        value:
-          type: string
-        description:
-          type: string
-        business_identifiers:
-          type: object
-          properties:
-            identifier_type:
-              type: string
-            identifier_value:
-              type: string
-            registered_name:
-              type: string
-        b2b_id_status:
-          type: string
   parameters:
     requestId:
       name: Request-ID
@@ -5642,14 +4663,6 @@ components:
         type: string
       description: 'unique app ID, generated during app registration'
       example: 'app_36c3e32a-dc18-11e8-89bd-0242ac130002'
-    appToken:
-      name: App-Token
-      in: header
-      required: true
-      schema:
-        type: string
-      description: 'unique app token, generated during app registration'
-      example: '36c3e32adc1811e889bd0242ac130002'
     OrderId:
       name: order_id
       in: path
@@ -5671,5 +4684,4 @@ components:
       description: 'unique reference ID'
       schema:
         type: string
-
 
