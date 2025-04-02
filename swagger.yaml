@@ -823,6 +823,12 @@ paths:
               schema:
                 type: object
                 properties:
+                  code:
+                    type: string
+                    example: ""
+                  msg:
+                    type: string
+                    example: ""
                   business_status:
                     type: string
                     example: "REGISTERED"
@@ -1092,6 +1098,12 @@ paths:
               schema:
                 type: object
                 properties:
+                  code:
+                    type: string
+                    example: ""
+                  msg:
+                    type: string
+                    example: ""
                   business_status:
                     type: string
                     example: "REGISTERED"
@@ -1263,6 +1275,12 @@ paths:
               schema:
                 type: object
                 properties:
+                  code:
+                    type: string
+                    example: ""
+                  msg:
+                    type: string
+                    example: ""
                   business_status:
                     type: string
                     example: "REGISTERED"
@@ -2342,6 +2360,12 @@ paths:
               schema:
                 type: object
                 properties:
+                  code:
+                    type: string
+                    example: ""
+                  msg:
+                    type: string
+                    example: ""
                   business_id:
                     type: string
                     pattern: "^[a-zA-Z0-9 _\\.]*$"
