@@ -783,6 +783,14 @@ paths:
                       pincode:
                         type: string
                         example: "560066"
+                    required:
+                      - type
+                      - address_line_1
+                      - address_line_2
+                      - city
+                      - state
+                      - country
+                      - pincode
                 bank_accounts:
                   type: array
                   items:
@@ -806,6 +814,12 @@ paths:
                         pattern: "^[a-zA-Z0-9 _\\.]*$"
                       is_verified:
                         type: boolean
+                    required:
+                      - bank_account_type
+                      - ifsc
+                      - account_number
+                      - beneficiary_name
+                      - is_verified
 
               required:
                 - business_id
@@ -832,12 +846,13 @@ paths:
                   business_status:
                     type: string
                     example: "REGISTERED"
+                    enum: [REGISTERED, UNREGISTERED, DEREGISTERED, REGISTRATION_PENDING, REGISTRATION_FAILED]
                   business_id:
                     type: string
                     example: "ORGeadecb9c3c1e4558a65f439d6dc3348a"
                   status:
                     type: string
-                    example: "SUCCESS"
+                    enum: [ SUCCESS, FAILURE ]
                   verification_level:
                     type: string
                     example: "1"
@@ -847,6 +862,7 @@ paths:
                   business_type:
                     type: string
                     example: "SOLE PROP"
+                    enum: [ SOLE PROP, BOI, AOP, HUF, COMPANY, LLP, PARTNERSHIP FIRM, TRUST, GOVERNEMNT AGENCY, LOCAL AUTHORITY, AJP ]
                   pan:
                     type: string
                     example: "DRBPO2364L"
@@ -867,9 +883,15 @@ paths:
                         identifier_type:
                           type: string
                           example: "GSTIN"
+                          enum: [ GSTIN, UDHYAM, SHOP ESTABLISHMENT CERTIFICATE, PAN, TAN, IEC, LEI, FACTORY LICENSE NUMBER, DRUG LICENSE NUMBER, TOURISM LICENSE NUMBER, FDA, FSSAI, HEALTH AND TRADE LICENSE NUMBER, LABOR LICENSE NUMBER, BROADCASTING AND TELECOM LICENSE NUMBER ]
                         identifier_value:
                           type: string
                           example: "19DRBPO2364L1TU"
+                      required:
+                        - business_identifier_id
+                        - is_primary
+                        - identifier_type
+                        - identifier_value
                   addresses:
                     type: array
                     items:
@@ -881,18 +903,29 @@ paths:
                         type:
                           type: string
                           example: "REGISTERED ADDRESS"
+                          enum: [ REGISTERED ADDRESS, CORPORATE OFFICE, BRANCH OFFICE, HEAD OFFICE, OTHER ]
                         city:
                           type: string
                           example: "Bengaluru"
                         state:
                           type: string
                           example: "ANDAMAN AND NICOBAR ISLANDS"
+                          enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
                         country:
                           type: string
                           example: "India"
                         pincode:
                           type: string
                           example: "560066"
+                      required:
+                        - address_id
+                        - type
+                        - address_line_1
+                        - address_line_2
+                        - city
+                        - state
+                        - country
+                        - pincode
                   bank_accounts:
                     type: array
                     items:
@@ -904,6 +937,7 @@ paths:
                         bank_account_type:
                           type: string
                           example: "CURRENT"
+                          enum: [ SAVINGS, CURRENT, DEFAULT, CREDIT, OVERDRAFT, LOAN, CHECKING, BANKWALLET, SOD, PPI WALLET ]
                         ifsc:
                           type: string
                           example: "SBIN0030055"
@@ -913,6 +947,13 @@ paths:
                         beneficiary_name:
                           type: string
                           example: "sajan chouhan"
+                      required:
+                        - bank_account_id
+                        - bank_account_type
+                        - ifsc
+                        - account_number
+                        - beneficiary_name
+                        - is_verified
                   contact_details:
                     type: array
                     items:
@@ -927,9 +968,23 @@ paths:
                         contact_type:
                           type: string
                           example: "email"
+                          enum: [mobile, email]
                         is_primary:
                           type: boolean
                           example: true
+                      required:
+                        - contact
+                        - is_primary
+                        - contact_type
+
+                required:
+                  - business_id
+                  - business_name
+                  - business_type
+                  - pan
+                  - default_b2b_id
+                  - business_identifiers
+                  - contact_details
         "400":
           description: Bad request
           content:
@@ -1062,6 +1117,14 @@ paths:
                       pincode:
                         type: string
                         example: "560066"
+                    required:
+                      - type
+                      - address_line_1
+                      - address_line_2
+                      - city
+                      - state
+                      - country
+                      - pincode
                 bank_accounts:
                   type: array
                   items:
@@ -1085,6 +1148,12 @@ paths:
                         pattern: "^[a-zA-Z0-9 _\\.]*$"
                       is_verified:
                         type: boolean
+                    required:
+                      - bank_account_type
+                      - ifsc
+                      - account_number
+                      - beneficiary_name
+                      - is_verified
 
               required:
                 - business_id
@@ -1112,12 +1181,13 @@ paths:
                   business_status:
                     type: string
                     example: "REGISTERED"
+                    enum: [REGISTERED, UNREGISTERED, DEREGISTERED, REGISTRATION_PENDING, REGISTRATION_FAILED]
                   business_id:
                     type: string
                     example: "ORGeadecb9c3c1e4558a65f439d6dc3348a"
                   status:
                     type: string
-                    example: "SUCCESS"
+                    enum: [ SUCCESS, FAILURE ]
                   verification_level:
                     type: string
                     example: "1"
@@ -1127,6 +1197,7 @@ paths:
                   business_type:
                     type: string
                     example: "SOLE PROP"
+                    enum: [ SOLE PROP, BOI, AOP, HUF, COMPANY, LLP, PARTNERSHIP FIRM, TRUST, GOVERNEMNT AGENCY, LOCAL AUTHORITY, AJP ]
                   pan:
                     type: string
                     example: "DRBPO2364L"
@@ -1147,9 +1218,15 @@ paths:
                         identifier_type:
                           type: string
                           example: "GSTIN"
+                          enum: [ GSTIN, UDHYAM, SHOP ESTABLISHMENT CERTIFICATE, PAN, TAN, IEC, LEI, FACTORY LICENSE NUMBER, DRUG LICENSE NUMBER, TOURISM LICENSE NUMBER, FDA, FSSAI, HEALTH AND TRADE LICENSE NUMBER, LABOR LICENSE NUMBER, BROADCASTING AND TELECOM LICENSE NUMBER ]
                         identifier_value:
                           type: string
                           example: "19DRBPO2364L1TU"
+                      required:
+                        - business_identifier_id
+                        - is_primary
+                        - identifier_type
+                        - identifier_value
                   addresses:
                     type: array
                     items:
@@ -1161,18 +1238,29 @@ paths:
                         type:
                           type: string
                           example: "REGISTERED ADDRESS"
+                          enum: [ REGISTERED ADDRESS, CORPORATE OFFICE, BRANCH OFFICE, HEAD OFFICE, OTHER ]
                         city:
                           type: string
                           example: "Bengaluru"
                         state:
                           type: string
                           example: "ANDAMAN AND NICOBAR ISLANDS"
+                          enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
                         country:
                           type: string
                           example: "India"
                         pincode:
                           type: string
                           example: "560066"
+                      required:
+                        - address_id
+                        - type
+                        - address_line_1
+                        - address_line_2
+                        - city
+                        - state
+                        - country
+                        - pincode
                   bank_accounts:
                     type: array
                     items:
@@ -1184,6 +1272,7 @@ paths:
                         bank_account_type:
                           type: string
                           example: "CURRENT"
+                          enum: [ SAVINGS, CURRENT, DEFAULT, CREDIT, OVERDRAFT, LOAN, CHECKING, BANKWALLET, SOD, PPI WALLET ]
                         ifsc:
                           type: string
                           example: "SBIN0030055"
@@ -1193,6 +1282,13 @@ paths:
                         beneficiary_name:
                           type: string
                           example: "sajan chouhan"
+                      required:
+                        - bank_account_id
+                        - bank_account_type
+                        - ifsc
+                        - account_number
+                        - beneficiary_name
+                        - is_verified
                   contact_details:
                     type: array
                     items:
@@ -1207,9 +1303,26 @@ paths:
                         contact_type:
                           type: string
                           example: "email"
+                          enum: [ mobile, email ]
                         is_primary:
                           type: boolean
                           example: true
+                      required:
+                        - contact
+                        - is_primary
+                        - contact_type
+
+                required:
+                  - business_id
+                  - business_name
+                  - business_type
+                  - pan
+                  - default_b2b_id
+                  - business_identifiers
+                  - contact_details
+                  - status
+                  - msg
+                  - code
         "400":
           description: Bad request
           content:
@@ -1289,12 +1402,14 @@ paths:
                   business_status:
                     type: string
                     example: "REGISTERED"
+                    enum: [REGISTERED, UNREGISTERED, DEREGISTERED, REGISTRATION_PENDING, REGISTRATION_FAILED]
                   business_id:
                     type: string
                     example: "ORGeadecb9c3c1e4558a65f439d6dc3348a"
                   status:
                     type: string
                     example: "SUCCESS"
+                    enum: [ SUCCESS, FAILURE ]
                   verification_level:
                     type: string
                     example: "1"
@@ -1304,6 +1419,7 @@ paths:
                   business_type:
                     type: string
                     example: "SOLE PROP"
+                    enum: [ SOLE PROP, BOI, AOP, HUF, COMPANY, LLP, PARTNERSHIP FIRM, TRUST, GOVERNEMNT AGENCY, LOCAL AUTHORITY, AJP ]
                   pan:
                     type: string
                     example: "DRBPO2364L"
@@ -1324,9 +1440,15 @@ paths:
                         identifier_type:
                           type: string
                           example: "GSTIN"
+                          enum: [ GSTIN, UDHYAM, SHOP ESTABLISHMENT CERTIFICATE, PAN, TAN, IEC, LEI, FACTORY LICENSE NUMBER, DRUG LICENSE NUMBER, TOURISM LICENSE NUMBER, FDA, FSSAI, HEALTH AND TRADE LICENSE NUMBER, LABOR LICENSE NUMBER, BROADCASTING AND TELECOM LICENSE NUMBER ]
                         identifier_value:
                           type: string
                           example: "19DRBPO2364L1TU"
+                      required:
+                        - business_identifier_id
+                        - is_primary
+                        - identifier_type
+                        - identifier_value
                   addresses:
                     type: array
                     items:
@@ -1338,18 +1460,29 @@ paths:
                         type:
                           type: string
                           example: "REGISTERED ADDRESS"
+                          enum: [ REGISTERED ADDRESS, CORPORATE OFFICE, BRANCH OFFICE, HEAD OFFICE, OTHER ]
                         city:
                           type: string
                           example: "Bengaluru"
                         state:
                           type: string
                           example: "ANDAMAN AND NICOBAR ISLANDS"
+                          enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
                         country:
                           type: string
                           example: "India"
                         pincode:
                           type: string
                           example: "560066"
+                      required:
+                        - address_id
+                        - type
+                        - address_line_1
+                        - address_line_2
+                        - city
+                        - state
+                        - country
+                        - pincode
                   bank_accounts:
                     type: array
                     items:
@@ -1361,6 +1494,7 @@ paths:
                         bank_account_type:
                           type: string
                           example: "CURRENT"
+                          enum: [ SOLE PROP, BOI, AOP, HUF, COMPANY, LLP, PARTNERSHIP FIRM, TRUST, GOVERNEMNT AGENCY, LOCAL AUTHORITY, AJP ]
                         ifsc:
                           type: string
                           example: "SBIN0030055"
@@ -1370,6 +1504,14 @@ paths:
                         beneficiary_name:
                           type: string
                           example: "sajan chouhan"
+                      required:
+                        - bank_account_id
+                        - bank_account_type
+                        - ifsc
+                        - account_number
+                        - beneficiary_name
+                        - is_verified
+
                   contact_details:
                     type: array
                     items:
@@ -1384,9 +1526,27 @@ paths:
                         contact_type:
                           type: string
                           example: "email"
+                          enum: [mobile, email]
                         is_primary:
                           type: boolean
                           example: true
+                      required:
+                        - contact
+                        - is_primary
+                        - contact_type
+
+                required:
+                  - business_id
+                  - business_name
+                  - business_type
+                  - pan
+                  - default_b2b_id
+                  - business_identifiers
+                  - contact_details
+                  - status
+                  - msg
+                  - code
+
         "400":
           description: Bad request
           content:
@@ -2212,8 +2372,9 @@ paths:
       parameters:
         - $ref: '#/components/parameters/requestId'
         - $ref: '#/components/parameters/appId'
+
       requestBody:
-        description: Data from V2
+        description: check existence of b2b id
         required: true
         content:
           application/json:
@@ -2350,6 +2511,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/requestId'
         - $ref: '#/components/parameters/appId'
+        - $ref: '#/components/parameters/appToken'
       requestBody:
         description: Data from V2
         required: true
@@ -5620,7 +5782,7 @@ components:
           example: ""
         status:
           type: string
-          example: "SUCCESS"
+          enum: [ SUCCESS, FAILURE ]
         business_info:
           type: array
           items:
@@ -5733,5 +5895,3 @@ components:
       description: 'unique reference ID'
       schema:
         type: string
-
-
