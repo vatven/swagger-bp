@@ -1534,7 +1534,7 @@ paths:
                   example: false
       responses:
         "200":
-          description: Business successfully created
+          description: OTP triggered successfully
           content:
             application/json:
               schema:
