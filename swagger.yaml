@@ -975,6 +975,10 @@ paths:
             schema:
               type: object
               properties:
+                verification_level:
+                  type: string
+                  example: "1"
+                  pattern: "^[a-zA-Z0-9 _\\.]*$"
                 business_id:
                   type: string
                   example: "ORGeadecb9c3c1e4558a65f439d6dc3348a"
@@ -1090,6 +1094,7 @@ paths:
                 - default_b2b_id
                 - business_identifiers
                 - contact_details
+                - verification_level
       responses:
         "200":
           description: Business successfully edited
