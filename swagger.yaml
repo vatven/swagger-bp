@@ -5659,7 +5659,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BusinessInfoDetails'
-        b2b_Id_details:
+        b2b_id_details:
           type: array
           items:
             $ref: '#/components/schemas/B2bIdDetails'
