@@ -975,6 +975,10 @@ paths:
             schema:
               type: object
               properties:
+                verification_level:
+                  type: string
+                  example: "1"
+                  pattern: "^[a-zA-Z0-9 _\\.]*$"
                 business_id:
                   type: string
                   example: "ORGeadecb9c3c1e4558a65f439d6dc3348a"
@@ -1090,6 +1094,7 @@ paths:
                 - default_b2b_id
                 - business_identifiers
                 - contact_details
+                - verification_level
       responses:
         "200":
           description: Business successfully edited
@@ -1529,7 +1534,7 @@ paths:
                   example: false
       responses:
         "200":
-          description: Business successfully created
+          description: OTP triggered successfully
           content:
             application/json:
               schema:
@@ -5654,7 +5659,7 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/BusinessInfoDetails'
-        b2b_Id_details:
+        b2b_id_details:
           type: array
           items:
             $ref: '#/components/schemas/B2bIdDetails'
