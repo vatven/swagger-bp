@@ -960,7 +960,7 @@ paths:
   /b2b/v2/onboarding/business/edit:
     post:
       summary: Edit a new business
-      description: This endpoint is used to create a new business with relevant details.
+      description: This endpoint is used to edit business with relevant details.
       tags:
         - Tally Onboarding
       operationId: EditBusinessV2
@@ -1092,7 +1092,7 @@ paths:
                 - contact_details
       responses:
         "200":
-          description: Business successfully created
+          description: Business successfully edited
           content:
             application/json:
               schema:
@@ -1232,7 +1232,7 @@ paths:
                     type: string
                     example: "Internal server error"
 
-  /b2b/v2/onboarding/business/check:
+  /b2b/v1/business/check:
     post:
       summary: Check if business exists
       description: This endpoint is used to check a if business exists with relevant details.
@@ -1269,7 +1269,7 @@ paths:
                 - identifier_value
       responses:
         "200":
-          description: Business successfully created
+          description: Business details
           content:
             application/json:
               schema:
@@ -1444,7 +1444,7 @@ paths:
                   example: false
       responses:
         "200":
-          description: Business successfully created
+          description: OTP triggered successfully
           content:
             application/json:
               schema:
@@ -1452,16 +1452,20 @@ paths:
                 properties:
                   business_id:
                     type: string
+                    example: "ORG92d3d5d4a9bd4c159be343077eef382b"
                   email:
                     type: string
+                    example: "akshat.garg.0492@gmail.com"
                   msg:
                     type: string
                   status:
                     type: string
+                    example: "SUCCESS"
                   code:
                     type: string
                   token:
                     type: string
+                    example: "3y7478trf626fg474tr381oy74rf6tgcrefgdo8273"
 
         "400":
           description: Bad request
@@ -1501,7 +1505,7 @@ paths:
         - $ref: '#/components/parameters/appToken'
       summary: Trigger OTP for mobile
       description: |
-        Triggers an OTP to be sent via email to a specific email address.
+        Triggers an OTP to be sent via email to a specific mobile.
       requestBody:
         required: true
         content:
@@ -1513,7 +1517,7 @@ paths:
                   type: string
                   description: The ID of the business associated with the email address.
                   example: ORG92d3d5d4a9bd4c159be343077eef382b
-                email:
+                mobile:
                   type: string
                   format: email
                   description: The mobile number to send the OTP to.
@@ -1533,16 +1537,20 @@ paths:
                 properties:
                   business_id:
                     type: string
-                  email:
+                    example: ORG92d3d5d4a9bd4c159be343077eef382b
+                  mobile:
                     type: string
+                    example: 9408956366
                   msg:
                     type: string
                   status:
                     type: string
+                    example: "SUCCESS"
                   code:
                     type: string
                   token:
                     type: string
+                    example: "3y7478trf626fg474tr381oy74rf6tgcrefgdo8273"
 
         "400":
           description: Bad request
@@ -1611,16 +1619,20 @@ paths:
                 properties:
                   business_id:
                     type: string
+                    example: ORG92d3d5d4a9bd4c159be343077eef382b
                   msg:
                     type: string
                   status:
                     type: string
+                    example: SUCCESS
                   code:
                     type: string
                   token:
                     type: string
+                    example: 39079406c2be95589690e1ff0b8277b18ddab361646cf7175522b80eee9589d5
                   otp:
                     type: string
+                    example: 180466
 
         "400":
           description: Bad request
