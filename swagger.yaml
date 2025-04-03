@@ -2706,6 +2706,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/requestId'
         - $ref: '#/components/parameters/appId'
+        - $ref: '#/components/parameters/appToken'
       requestBody:
         description: Data from V2
         required: true
@@ -2749,7 +2750,7 @@ paths:
                 $ref: '#/components/schemas/BusinessInfo'
 
         400:
-          description: unable to make req pay
+          description: unable to seach business
           content:
             application/json:
               schema:
@@ -5498,6 +5499,7 @@ paths:
       parameters:
         - $ref: '#/components/parameters/requestId'
         - $ref: '#/components/parameters/appId'
+        - $ref: '#/components/parameters/appToken'
       requestBody:
         description: Data from V2
         required: true
@@ -5604,12 +5606,16 @@ components:
       properties:
         business_id:
           type: string
+          example: ORG2258823e01f847e0a47b4e48623dc487
         msg:
           type: string
+          example: ""
         code:
           type: string
+          example: ""
         status:
           type: string
+          example: "SUCCESS"
         business_info:
           type: array
           items:
@@ -5619,22 +5625,31 @@ components:
       properties:
         search_parameter:
           type: string
+          example: def_asics
         search_result:
           type: string
+          example: SUCCESS
         name:
           type: string
+          example: ASICS INDIA PVT LTD
         alias:
           type: string
+          example: ""
         mcc_code:
           type: string
+          example: ""
         state:
           type: string
+          example: MAHARASHTRA
         pincode:
           type: string
+          example: 400079
         entity_status:
           type: string
+          example: ""
         verification_level:
           type: string
+          example: "1"
         public_b2b_ids:
           type: array
           items:
@@ -5649,19 +5664,25 @@ components:
       properties:
         value:
           type: string
+          example: def_asics
         description:
           type: string
+          example: Default B2B ID
         business_identifiers:
           type: object
           properties:
             identifier_type:
               type: string
+              example: GSTIN
             identifier_value:
               type: string
+              example: 06AAKCA6445Q1Z2
             registered_name:
               type: string
+              example: SICS INDIA PVT LTD
         b2b_id_status:
           type: string
+          example: ACTIVE
   parameters:
     requestId:
       name: Request-ID
