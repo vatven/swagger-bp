@@ -2392,12 +2392,22 @@ paths:
 
       responses:
         200:
-          description: Data from V2
+          description: B2B ID availability info
           content:
             application/json:
               schema:
                 type: object
                 properties:
+                  msg:
+                    type: string
+                    example: ""
+                  code:
+                    type: string
+                    example: ""
+                  status:
+                    type: string
+                    example: SUCCESS
+                    enum: [SUCCESS, FAILURE]
                   b2b_id_availability:
                     type: array
                     items:
@@ -2410,6 +2420,15 @@ paths:
                           type: string
                           example: "AVAILABLE"
                           enum: [AVAILABLE, UNAVAILABLE]
+                      required:
+                        - b2b_id
+                        - status
+
+                required:
+                  - msg
+                  - code
+                  - status
+                  - b2b_id_availability
         400:
           description: unable to make req pay
           content:
