@@ -1444,6 +1444,11 @@ paths:
                         identifier_value:
                           type: string
                           example: "19DRBPO2364L1TU"
+                        b2b_ids:
+                          type: array
+                          items:
+                            type: string
+                            example: def_b2b_test_105
                       required:
                         - business_identifier_id
                         - is_primary
