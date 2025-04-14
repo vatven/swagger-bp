@@ -12,6 +12,7 @@ tags:
     description: payment apis
   - name: Onboarding
   - name: Tally Onboarding
+  - name: Tally Invoice
   - name: Invoice
   - name: Financing
   - name: CMS
@@ -355,6 +356,1198 @@ paths:
                     type: string
                     example: "B2B010"
                     description: error code
+
+  /b2b/v1/invoice/{invoice_id}/fetch:
+    get:
+      summary: Fetch Invoice Details
+      description: Retrieves the full details of a B2B invoice using its unique invoice ID.
+      operationId: FetchInvoiceDetails
+      tags:
+        - Tally Invoice
+      parameters:
+        - name: invoice_id
+          in: path
+          required: true
+          schema:
+            type: string
+          description: The unique ID of the invoice to fetch.
+        - $ref: '#/components/parameters/requestId'
+        - $ref: '#/components/parameters/appId'
+        - $ref: '#/components/parameters/appToken'
+      responses:
+        '200':
+          description: Successful response with invoice details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  msg:
+                    type: string
+                    example: ""
+                  code:
+                    type: string
+                    example: ""
+                  invoice_status:
+                    type: string
+                    example: SENT TO BUYER
+                  supplier_invoice_number:
+                    type: string
+                    example: e13a6955-072f-454f-bf9c-8dfb969dee2b
+                  einvoice:
+                    type: object
+                    properties:
+                      irn:
+                        type: string
+                        example: irnewdhbcebrfihcopwdcbyerubgvyerbcjbdsjb
+                  transaction_details:
+                    type: object
+                  eway_bill_detail:
+                    type: object
+                    properties:
+                      distance:
+                        type: integer
+                        example: 500
+                  supplier_details:
+                    type: object
+                    properties:
+                      b2b_id:
+                        type: string
+                        example: vatech_karnataka
+                      gstin:
+                        type: string
+                        example: 29AAECV1948B2ZB
+                      legal_name:
+                        type: string
+                        example: VA Tech Ventures Private Limited
+                      state_code:
+                        type: string
+                        example: "16"
+                      address:
+                        type: object
+                      contact_number:
+                        type: object
+                  buyer_details:
+                    type: object
+                    properties:
+                      b2b_id:
+                        type: string
+                        example: time_education_haryana_4
+                      gstin:
+                        type: string
+                        example: 06AABCT6144J1ZA
+                      legal_name:
+                        type: string
+                        example: freshworks
+                      trade_name:
+                        type: string
+                        example: time education
+                      state_code:
+                        type: string
+                        example: "16"
+                      place_of_supply:
+                        type: string
+                        example: "16"
+                      address:
+                        type: object
+                      contact_number:
+                        type: object
+                  item_lists:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        serial_no:
+                          type: string
+                          example: "1"
+                        product_description:
+                          type: string
+                          example: TnE Service
+                        is_service:
+                          type: string
+                          example: YES
+                        hsn_code:
+                          type: string
+                          example: "997331"
+                        quantity:
+                          type: number
+                          example: 1
+                        unit:
+                          type: string
+                          example: UNT
+                        unit_price:
+                          type: number
+                          example: 1
+                        total_amount:
+                          type: number
+                          example: 10
+                        assessment_amount:
+                          type: number
+                          example: 10
+                        total_item_value:
+                          type: number
+                          example: 10
+                  value_details:
+                    type: object
+                    properties:
+                      assessment_value:
+                        type: number
+                        example: 10
+                      total_invoice_value:
+                        type: number
+                        example: 10
+                  current_status:
+                    type: string
+                    example: CREATED
+                  new_status:
+                    type: string
+                    example: SENT TO BUYER
+                  invoice_id:
+                    type: string
+                    example: INV52b5bf34b4854464bea9564ada3d8669
+        400:
+          description: unable to make req pay
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                    example: "3ab43aa0-7187-44b1-8371-5fa448841da3"
+                    description: request id
+                  message:
+                    type: string
+                    example: "webhook not received from central unit"
+                    description: error message
+                  code:
+                    type: string
+                    example: "B2B010"
+                    description: error code
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Internal server error"
+
+  /b2b/v1/invoice/details/fetch/ledger:
+    post:
+      summary: Fetch Invoice Ledger Details
+      description: Retrieves ledger details of invoices for a given business within a date range.
+      operationId: FetchInvoiceLedgerDetails
+      tags:
+        - Tally Invoice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - business_id
+                - ledger_view
+                - b2b_ids
+                - from_date
+                - to_date
+              properties:
+                business_id:
+                  type: string
+                  example: ORGeb7678721cc849e098e823096494efac
+                ledger_view:
+                  type: string
+                  example: supplier
+                  enum: [ supplier, buyer ]
+                b2b_ids:
+                  type: array
+                  items:
+                    type: string
+                  example: [ "vatech_karnataka" ]
+                from_date:
+                  type: string
+                  format: date-time
+                  example: 2025-03-05T00:00:00Z
+                to_date:
+                  type: string
+                  format: date-time
+                  example: 2025-03-12T01:52:25Z
+      parameters:
+        - $ref: '#/components/parameters/requestId'
+        - $ref: '#/components/parameters/appId'
+        - $ref: '#/components/parameters/appToken'
+      responses:
+        '200':
+          description: Successful response with ledger details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: ""
+                  status:
+                    type: string
+                    example: SUCCESS
+                  code:
+                    type: string
+                    example: ""
+                  business_id:
+                    type: string
+                    example: ORGeb7678721cc849e098e823096494efac
+                  b2b_id:
+                    type: string
+                    example: vatech_karnataka
+                  from_date:
+                    type: string
+                    format: date-time
+                    example: 2025-03-05T00:00:00Z
+                  to_date:
+                    type: string
+                    format: date-time
+                    example: 2025-03-12T01:52:25Z
+                  invoice_count:
+                    type: integer
+                    example: 11
+                  total_amount:
+                    type: number
+                    example: 9031
+                  invoice_status_details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        invoice_status:
+                          type: string
+                          example: SENT TO BUYER
+                        count:
+                          type: integer
+                          example: 6
+                        amount:
+                          type: number
+                          example: 5010
+                        invoice_ids:
+                          type: array
+                          items:
+                            type: string
+                          example:
+                            - INV1c159180b67a4a13b4bb5070399cfae4
+                            - INVac4a1547ff064fe6b8a86148a8891de4
+        400:
+          description: unable to make req pay
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                    example: "3ab43aa0-7187-44b1-8371-5fa448841da3"
+                    description: request id
+                  message:
+                    type: string
+                    example: "webhook not received from central unit"
+                    description: error message
+                  code:
+                    type: string
+                    example: "B2B010"
+                    description: error code
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Internal server error"
+
+  /b2b/v1/invoice/details/fetch/status:
+    post:
+      summary: Fetch Invoice Details by Status
+      description: Retrieves a list of invoices filtered by status, business ID, and date range.
+      operationId: FetchInvoiceStatusDetails
+      tags:
+        - Tally Invoice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - business_id
+                - ledger_view
+                - b2b_ids
+                - invoice_status
+                - from_date
+                - to_date
+              properties:
+                business_id:
+                  type: string
+                  example: ORGeb7678721cc849e098e823096494efac
+                ledger_view:
+                  type: string
+                  example: supplier
+                  enum: [supplier, buyer]
+                b2b_ids:
+                  type: array
+                  items:
+                    type: string
+                  example: [ "vatech_karnataka" ]
+                invoice_status:
+                  type: string
+                  example: SENT TO BUYER
+                from_date:
+                  type: string
+                  format: date-time
+                  example: 2025-03-05T00:00:00Z
+                to_date:
+                  type: string
+                  format: date-time
+                  example: 2025-03-12T01:52:25Z
+      parameters:
+        - $ref: '#/components/parameters/requestId'
+        - $ref: '#/components/parameters/appId'
+        - $ref: '#/components/parameters/appToken'
+      responses:
+        '200':
+          description: Successfully fetched invoice data filtered by status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/FetchInvoicesStatusResponse'
+
+        400:
+          description: unable to make req pay
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                    example: "3ab43aa0-7187-44b1-8371-5fa448841da3"
+                    description: request id
+                  message:
+                    type: string
+                    example: "webhook not received from central unit"
+                    description: error message
+                  code:
+                    type: string
+                    example: "B2B010"
+                    description: error code
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Internal server error"
+
+
+  /b2b/v1/invoice/create:
+    post:
+      summary: Create a new invoice
+      description: Creates a new B2B invoice with supplier, buyer, item, and value details.
+      operationId: CreateInvoice
+      tags:
+        - Tally Invoice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - supplier_invoice_number
+                - supplier_details
+                - buyer_details
+                - item_lists
+                - value_details
+              properties:
+                einvoice:
+                  type: object
+                  required:
+                    - irn
+                  properties:
+                    irn:
+                      type: string
+                      example: dummyirnnumberforinvoice
+                transaction_details:
+                  type: object
+                  required:
+                    - tax_scheme
+                    - supply_type
+                    - igst_chargable
+                  properties:
+                    tax_scheme:
+                      type: string
+                      enum: [ GST ]
+                    supply_type:
+                      type: string
+                      enum: [ B2B, SEZWP, SEZWOP, EXPWP, DEXP, B2C ]
+                    igst_chargable:
+                      type: string
+                #                      enum: [ YES, NO ]
+                supplier_invoice_number:
+                  type: string
+                  example: cb639cbc-2d84-4054-bb94-f90e1c7ef1ff
+                supplier_details:
+                  type: object
+                  required:
+                    - b2b_id
+                    - legal_name
+                  properties:
+                    b2b_id:
+                      type: string
+                      example: vatech_karnataka
+                    state_code:
+                      type: string
+                    address:
+                      type: object
+                      required:
+                        - address_line1
+                        - city
+                        - state
+                        - country
+                        - pincode
+                      properties:
+                        address_line1:
+                          type: string
+                          example: ""
+                        city:
+                          type: string
+                          example: ""
+                        state:
+                          type: string
+                          enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
+                        country:
+                          type: string
+                          example: "INDIA"
+                        pincode:
+                          type: string
+                          example: "560066"
+                    legal_name:
+                      type: string
+                      example: VA Tech Ventures Private Limited
+                buyer_details:
+                  type: object
+                  required:
+                    - b2b_id
+                    - trade_name
+                    - legal_name
+                  properties:
+                    b2b_id:
+                      type: string
+                      example: time_education_haryana_4
+                    state_code:
+                      type: string
+                      example: 29
+                    place_of_supply:
+                      type: string
+                      example: 29
+                    trade_name:
+                      type: string
+                      example: time education
+                    legal_name:
+                      type: string
+                      example: time education
+                    address:
+                      type: object
+                      required:
+                        - address_line1
+                        - city
+                        - state
+                        - country
+                        - pincode
+                      properties:
+                        address_line1:
+                          type: string
+                          example: ""
+                        city:
+                          type: string
+                          example: ""
+                        state:
+                          type: string
+                          enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
+                        country:
+                          type: string
+                          example: "INDIA"
+                        pincode:
+                          type: string
+                          example: "560066"
+                item_lists:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - serial_no
+                      - is_service
+                      - hsn_code
+                      - quantity
+                      - unit_price
+                      - total_amount
+                      - assessment_amount
+                      - total_item_value
+                    properties:
+                      serial_no:
+                        type: string
+                        example: "1"
+                      product_description:
+                        type: string
+                        example: TnE Service
+                      is_service:
+                        type: string
+                        example: YES
+                      hsn_code:
+                        type: string
+                        example: "997331"
+                      quantity:
+                        type: number
+                        example: 1
+                      unit:
+                        type: string
+                        example: UNT
+                      unit_price:
+                        type: number
+                        example: 1.0
+                      total_amount:
+                        type: number
+                        example: 10
+                      assessment_amount:
+                        type: number
+                        example: 10
+                      gst_rate:
+                        type: number
+                        example: 0.0
+                      total_item_value:
+                        type: number
+                        example: 10
+                value_details:
+                  type: object
+                  properties:
+                    assessment_value:
+                      type: number
+                      example: 10
+                    total_invoice_value:
+                      type: number
+                      example: 10
+                dispatch_details:
+                  $ref: '#/components/schemas/PartnerDispatchDetails'
+                shipping_details:
+                  $ref: '#/components/schemas/PartnerDispatchDetails'
+                advance_payment_details:
+                  $ref: '#/components/schemas/PartnerAdvancePaymentDetails'
+                invoice_reference_details:
+                  $ref: '#/components/schemas/PartnerInvoiceReferenceDetails'
+                preceding_invoice_details:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PartnerPrecedingInvoiceDetails'
+                po_details:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      po_id:
+                        type: string
+                      buyer_po_id:
+                        type: string
+                      po_date:
+                        type: string
+                contract_reference_details:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PartnerContractReferenceDetails'
+                export_details:
+                  $ref: '#/components/schemas/PartnerExportDetails'
+                recurring_payments:
+                  $ref: '#/components/schemas/PartnerRecurringPayments'
+                payment_milestones:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PaymentMilestone'
+                shipping_terms_details:
+                  $ref: '#/components/schemas/PartnerShippingTermsDetails'
+      parameters:
+        - $ref: '#/components/parameters/requestId'
+        - $ref: '#/components/parameters/appId'
+        - $ref: '#/components/parameters/appToken'
+      responses:
+        '200':
+          description: Invoice created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  msg:
+                    type: string
+                    example: ""
+                  code:
+                    type: string
+                    example: ""
+                  invoice_status:
+                    type: string
+                    example: ""
+                  supplier_invoice_number:
+                    type: string
+                    example: cb639cbc-2d84-4054-bb94-f90e1c7ef1ff
+                  supplier_details:
+                    type: object
+                    properties:
+                      b2b_id:
+                        type: string
+                      legal_name:
+                        type: string
+                      address:
+                        type: object
+                      contact_number:
+                        type: object
+                  buyer_details:
+                    type: object
+                    properties:
+                      b2b_id:
+                        type: string
+                      legal_name:
+                        type: string
+                      trade_name:
+                        type: string
+                      address:
+                        type: object
+                      contact_number:
+                        type: object
+                  item_lists:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        serial_no:
+                          type: string
+                        product_description:
+                          type: string
+                        is_service:
+                          type: string
+                        hsn_code:
+                          type: string
+                        quantity:
+                          type: number
+                        unit:
+                          type: string
+                        unit_price:
+                          type: number
+                        total_amount:
+                          type: number
+                        assessment_amount:
+                          type: number
+                        total_item_value:
+                          type: number
+                  value_details:
+                    type: object
+                    properties:
+                      assessment_value:
+                        type: number
+                      total_invoice_value:
+                        type: number
+                  current_status:
+                    type: string
+                    example: CREATED
+                  new_status:
+                    type: string
+                    example: SENT TO BUYER
+                  invoice_id:
+                    type: string
+                    example: INV259aa10badd943d2bda12be26bb5fd5b
+        400:
+          description: unable to make req pay
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                    example: "3ab43aa0-7187-44b1-8371-5fa448841da3"
+                    description: request id
+                  message:
+                    type: string
+                    example: "webhook not received from central unit"
+                    description: error message
+                  code:
+                    type: string
+                    example: "B2B010"
+                    description: error code
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Internal server error"
+
+  /b2b/v2/invoice/buyer/status/change:
+    post:
+      summary: Change Buyer Status of an Invoice
+      description: Updates the status of an invoice from the buyer's side with remarks.
+      operationId: InvoiceBuyerStatusChange
+      tags:
+        - Tally Invoice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - invoice_id
+                - buyer_response
+                - buyer_remarks
+              properties:
+                invoice_id:
+                  type: string
+                  example: INV259aa10badd943d2bda12be26bb5fd5b
+                buyer_response:
+                  type: string
+                  enum: [ACCEPT, REJECT, RETURN]
+                  example: ACCEPT
+                buyer_remarks:
+                  type: string
+                  example: Invoice accepted
+      parameters:
+        - $ref: '#/components/parameters/requestId'
+        - $ref: '#/components/parameters/appId'
+        - $ref: '#/components/parameters/appToken'
+      responses:
+        '200':
+          description: Buyer status successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  msg:
+                    type: string
+                    example: ""
+                  code:
+                    type: string
+                    example: ""
+                  current_status:
+                    type: string
+                    example: SENT TO BUYER
+                  new_status:
+                    type: string
+                    example: ACCEPTED
+                  invoice_id:
+                    type: string
+                    example: INV259aa10badd943d2bda12be26bb5fd5b
+                  buyer_response:
+                    type: string
+                    example: ACCEPT
+                  buyer_remarks:
+                    type: string
+                    example: Invoice accepted
+        400:
+          description: unable to make req pay
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                    example: "3ab43aa0-7187-44b1-8371-5fa448841da3"
+                    description: request id
+                  message:
+                    type: string
+                    example: "webhook not received from central unit"
+                    description: error message
+                  code:
+                    type: string
+                    example: "B2B010"
+                    description: error code
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Internal server error"
+
+  /b2b/v2/invoice/supplier/status/change:
+    post:
+      summary: Change Supplier Status of an Invoice
+      description: Updates the status of an invoice from the supplier's side with remarks.
+      operationId: InvoiceSupplierStatusChange
+      tags:
+        - Tally Invoice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - invoice_id
+                - supplier_action
+                - supplier_remarks
+              properties:
+                invoice_id:
+                  type: string
+                  example: INV259aa10badd943d2bda12be26bb5fd5b
+                supplier_action:
+                  type: string
+                  enum: [CLOSE, CANCEL, ABANDON]
+                  example: CLOSE
+                supplier_remarks:
+                  type: string
+                  example: close the invoice
+      parameters:
+        - $ref: '#/components/parameters/requestId'
+        - $ref: '#/components/parameters/appId'
+        - $ref: '#/components/parameters/appToken'
+      responses:
+        '200':
+          description: Supplier status successfully updated
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  msg:
+                    type: string
+                    example: ""
+                  code:
+                    type: string
+                    example: ""
+                  current_status:
+                    type: string
+                    example: ACCEPTED
+                  new_status:
+                    type: string
+                    example: CLOSED
+                  invoice_id:
+                    type: string
+                    example: INV259aa10badd943d2bda12be26bb5fd5b
+                  supplier_action:
+                    type: string
+                    example: CLOSE
+                  supplier_remarks:
+                    type: string
+                    example: close the invoice
+        400:
+          description: unable to make req pay
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                    example: "3ab43aa0-7187-44b1-8371-5fa448841da3"
+                    description: request id
+                  message:
+                    type: string
+                    example: "webhook not received from central unit"
+                    description: error message
+                  code:
+                    type: string
+                    example: "B2B010"
+                    description: error code
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Internal server error"
+
+  /b2b/v1/invoice/update/irn:
+    post:
+      summary: Update Invoice IRN
+      description: Updates the IRN (Invoice Reference Number) and related details for an invoice.
+      operationId: UpdateInvoiceIRN
+      tags:
+        - Tally Invoice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - invoice_id
+                - invoice_irn
+                - supplier_details
+                - buyer_details
+                - item_lists
+              properties:
+                invoice_id:
+                  type: string
+                  example: INV52b5bf34b4854464bea9564ada3d8669
+                invoice_irn:
+                  type: string
+                  example: irnewdhbcebrfihcopwdcbyerubgvyerbcjbdsjb
+                supplier_details:
+                  type: object
+                  required:
+                    - gstin
+                    - state_code
+                  properties:
+                    gstin:
+                      type: string
+                      example: 29AAECV1948B2ZB
+                    state_code:
+                      type: string
+                      example: "16"
+                buyer_details:
+                  type: object
+                  required:
+                    - gstin
+                    - legal_name
+                    - state_code
+                    - place_of_supply
+                  properties:
+                    gstin:
+                      type: string
+                      example: 06AABCT6144J1ZA
+                    legal_name:
+                      type: string
+                      example: freshworks
+                    state_code:
+                      type: string
+                      example: "16"
+                    place_of_supply:
+                      type: string
+                      example: "16"
+                item_lists:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      gst_rate:
+                        type: string
+                        example: "0"
+      parameters:
+        - $ref: '#/components/parameters/requestId'
+        - $ref: '#/components/parameters/appId'
+        - $ref: '#/components/parameters/appToken'
+      responses:
+        '200':
+          description: IRN updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  msg:
+                    type: string
+                    example: ""
+                  code:
+                    type: string
+                    example: ""
+                  new_status:
+                    type: string
+                    example: SENT TO BUYER
+                  current_status:
+                    type: string
+                    example: SENT TO BUYER
+                  invoice_id:
+                    type: string
+                    example: INV52b5bf34b4854464bea9564ada3d8669
+                  invoice_irn:
+                    type: string
+                    example: irnewdhbcebrfihcopwdcbyerubgvyerbcjbdsjb
+                  supplier_details:
+                    type: object
+                    properties:
+                      gstin:
+                        type: string
+                        example: 29AAECV1948B2ZB
+                      state_code:
+                        type: string
+                        example: "16"
+                  buyer_details:
+                    type: object
+                    properties:
+                      gstin:
+                        type: string
+                        example: 06AABCT6144J1ZA
+                      legal_name:
+                        type: string
+                        example: freshworks
+                      state_code:
+                        type: string
+                        example: "16"
+                      place_of_supply:
+                        type: string
+                        example: "16"
+                  item_lists:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        gst_rate:
+                          type: string
+                          example: "0"
+        400:
+          description: unable to make req pay
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                    example: "3ab43aa0-7187-44b1-8371-5fa448841da3"
+                    description: request id
+                  message:
+                    type: string
+                    example: "webhook not received from central unit"
+                    description: error message
+                  code:
+                    type: string
+                    example: "B2B010"
+                    description: error code
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Internal server error"
+
+  /b2b/v1/invoice/update/eway:
+    post:
+      summary: Update E-Way Bill Details
+      description: Updates the E-Way bill details for the specified invoice.
+      operationId: InvoiceUpdateEwayDetails
+      tags:
+        - Tally Invoice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - invoice_id
+                - eway_bill_detail
+              properties:
+                invoice_id:
+                  type: string
+                  example: INV52b5bf34b4854464bea9564ada3d8669
+                eway_bill_detail:
+                  type: object
+                  required:
+                    - distance
+                  properties:
+                    distance:
+                      type: integer
+                      example: 500
+      parameters:
+        - name: Request-Id
+          in: header
+          required: true
+          schema:
+            type: string
+          description: Unique request identifier
+      responses:
+        '200':
+          description: E-Way bill updated successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: ""
+                  status:
+                    type: string
+                    example: SUCCESS
+                  code:
+                    type: string
+                    example: ""
+                  invoice_id:
+                    type: string
+                    example: INV52b5bf34b4854464bea9564ada3d8669
+                  current_status:
+                    type: string
+                    example: SENT TO BUYER
+                  new_status:
+                    type: string
+                    example: SENT TO BUYER
+                  eway_bill_detail:
+                    type: object
+                    properties:
+                      distance:
+                        type: integer
+                        example: 500
+        400:
+          description: unable to make req pay
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                    example: "3ab43aa0-7187-44b1-8371-5fa448841da3"
+                    description: request id
+                  message:
+                    type: string
+                    example: "webhook not received from central unit"
+                    description: error message
+                  code:
+                    type: string
+                    example: "B2B010"
+                    description: error code
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Internal server error"
 
   /b2b/v1/onboarding/business/create:
     post:
@@ -2287,12 +3480,9 @@ paths:
                       #   type: string
                       #   enum: [ BRANCH, LOCATION, GSTIN, TAX, BUSINESS UNIT, OTHER ]
                     required:
-                      - doc_name
-                      - value
-                      - privacy_type
-                      - b2b_ids
-                      - business_name
-                      - reason
+                      - identifier_id
+                      - private
+                      - b2b_id
 
               required:
                 - business_id
@@ -2961,472 +4151,538 @@ paths:
                     description: error code
 
 
-  /b2b/v1/invoice/create:
-    post:
-      summary: Supplier raise an Invoice
-      description: Supplier raise an Invoice to buyer
-      tags:
-        - Invoice
-      operationId: CreateInvoice
-      parameters:
-        - $ref: '#/components/parameters/requestId'
-        - $ref: '#/components/parameters/appId'
-      requestBody:
-        description: Data from V2
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                supplier_invoice_number:
-                  type: string
-                  description: invoice number
-                # current_status:
-                #   type: string
-                #   pattern: "^[a-zA-Z0-9 _\\.]*$"
-                #   description: current status of invoice
-                # new_status:
-                #   type: string
-                #   pattern: "^[a-zA-Z0-9 _\\.]*$"
-                #   description: new status of invoice
-                # invoice_id:
-                #   type: string
-                #   pattern: "^[a-zA-Z0-9 ]*$"
-                #   description: invoice id
-                # upi_vpa:
-                #   type: string
-                #   pattern: "^[a-zA-Z0-9 ]*$"
-                #   description: upi vpa
-                # account_number:
-                #   type: string
-                #   pattern: "^[a-zA-Z0-9 ]*$"
-                #   description: account number
-                # account_ifsc:
-                #   type: string
-                #   pattern: "^[a-zA-Z0-9 ]*$"
-                #   description: account ifsc
-                einvoice:
-                  type: object
-                  properties:
-                    irn:
-                      type: string
-                      pattern: "^[a-zA-Z0-9 _\\.]*$"
-                    irn_time_stamp:
-                      type: string
-                      pattern: "^[a-zA-Z0-9 _\\.]*$"
-                transaction_details:
-                  type: object
-                  properties:
-                    tax_scheme:
-                      type: string
-                      pattern: "^[a-zA-Z0-9 _\\.]*$"
-                    supply_type:
-                      type: string
-                      pattern: "^[a-zA-Z0-9 _\\.]*$"
-                    reverse_charge_tax:
-                      type: string
-                      pattern: "^[a-zA-Z0-9 _\\.]*$"
-                    ecommerce_gstin:
-                      type: string
-                      pattern: "^[a-zA-Z0-9 _\\.]*$"
-                    igst_chargable:
-                      type: string
-                      pattern: "^[a-zA-Z0-9 _\\.]*$"
-                value_details:
-                  type: object
-                  properties:
-                    assessment_value:
-                      type: number
-                      format: float
-                    total_invoice_value:
-                      type: number
-                      format: float
-                supplier_details:
-                  type: object
-                  properties:
-                    # ifsc:
-                    #   type: string
-                    #   pattern: "^[a-zA-Z0-9 _\\.]*$"
-                    # masked_account_number:
-                    #   type: string
-                    #   pattern: "^[0-9]*$"
-                    # beneficiary_name:
-                    #   type: string
-                    # businessVPA:
-                    #   type: string
-                    #   pattern: "^[a-zA-Z0-9]*$"
-                    b2b_id:
-                      type: string
-                    # gstin:
-                    #   type: string
-                    #   pattern: "^[a-zA-Z0-9]*$"
-                    # legal_name:
-                    #   type: string
-                    # trade_name:
-                    #   type: string
-                    state_code:
-                      type: string
-                      pattern: "^[a-zA-Z0-9]*$"
-                    email:
-                      type: string
-                      pattern: "^[a-zA-Z0-9]*$"
-                      example: "abc@gmail.com"
-                    address_id:
-                      type: string
-                      pattern: "^[a-zA-Z0-9]*$"
-                      example: "adr_113245yg32122435t"
-                    contact_id:
-                      type: string
-                      pattern: "^[a-zA-Z0-9]*$"
-                      example: "cnt_13efg645ew4542dse324"
-                buyer_details:
-                  type: object
-                  properties:
-                    place_of_supply:
-                      type: string
-                    masked_account_number:
-                      type: string
-                      pattern: "^[0-9]*$"
-                    beneficiary_name:
-                      type: string
-                    businessVPA:
-                      type: string
-                      pattern: "^[a-zA-Z0-9]*$"
-                    b2b_id:
-                      type: string
-                    gstin:
-                      type: string
-                      pattern: "^[a-zA-Z0-9]*$"
-                    legal_name:
-                      type: string
-                    trade_name:
-                      type: string
-                    state_code:
-                      type: string
-                      pattern: "^[a-zA-Z0-9]*$"
-                    email:
-                      type: string
-                    address:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                        address_line1:
-                          type: string
-                        address_line2:
-                          type: string
-                        city:
-                          type: string
-                          pattern: "^[a-zA-Z0-9 _\\.]*$"
-                        state:
-                          type: string
-                          enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
-                        country:
-                          type: string
-                          pattern: "^[a-zA-Z]*$"
-                        pincode:
-                          type: string
-                          pattern: "^[0-9]*$"
-                    contact_number:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                        country_code:
-                          type: string
-                        phone_number:
-                          type: string
-                          pattern: "^[0-9]*$"
-                item_lists:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      serial_no:
-                        type: string
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                        description: serial number
-                      product_description:
-                        type: string
-                      is_service:
-                        type: string
-                      hsn_code:
-                        type: string
-                      quantity:
-                        type: string
-                      free_quantity:
-                        type: string
-                      unit:
-                        type: string
-                      unit_price:
-                        type: number
-                        format: float
-                      total_amt:
-                        type: number
-                        format: float
-                      assessment_amount:
-                        type: number
-                        format: float
-                      gst_rate:
-                        type: number
-                        format: float
-                      total_item_value:
-                        type: number
-                        format: float
-
-              required:
-                - supplier_invoice_number
-                - einvoice
-                - transaction_details
-                - supplier_details
-                - item_lists
-                - value_details
-                - buyer_details
-      responses:
-        200:
-          description: Payment Info
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  supplier_invoice_number:
-                    type: string
-                    description: invoice number
-                  current_status:
-                    type: string
-                    pattern: "^[a-zA-Z0-9 _\\.]*$"
-                    description: current status of invoice
-                  new_status:
-                    type: string
-                    pattern: "^[a-zA-Z0-9 _\\.]*$"
-                    description: new status of invoice
-                  invoice_id:
-                    type: string
-                    pattern: "^[a-zA-Z0-9 ]*$"
-                    description: invoice id
-                  upi_vpa:
-                    type: string
-                    pattern: "^[a-zA-Z0-9 ]*$"
-                    description: upi vpa
-                  account_number:
-                    type: string
-                    pattern: "^[a-zA-Z0-9 ]*$"
-                    description: account number
-                  account_ifsc:
-                    type: string
-                    pattern: "^[a-zA-Z0-9 ]*$"
-                    description: account ifsc
-                  einvoice:
-                    type: object
-                    properties:
-                      irn:
-                        type: string
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                      irn_time_stamp:
-                        type: string
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                  transaction_details:
-                    type: object
-                    properties:
-                      tax_scheme:
-                        type: string
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                      supply_type:
-                        type: string
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                      reverse_charge_tax:
-                        type: string
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                      ecommerce_gstin:
-                        type: string
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                      igst_chargable:
-                        type: string
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                  value_details:
-                    type: object
-                    properties:
-                      assessment_value:
-                        type: number
-                        format: float
-                      total_invoice_value:
-                        type: number
-                        format: float"
-                  supplier_details:
-                    type: object
-                    properties:
-                      ifsc:
-                        type: string
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                      masked_account_number:
-                        type: string
-                        pattern: "^[0-9]*$"
-                      beneficiary_name:
-                        type: string
-                      businessVPA:
-                        type: string
-                        pattern: "^[a-zA-Z0-9]*$"
-                      b2b_id:
-                        type: string
-                      gstin:
-                        type: string
-                        pattern: "^[a-zA-Z0-9]*$"
-                      legal_name:
-                        type: string
-                      trade_name:
-                        type: string
-                      state_code:
-                        type: string
-                        pattern: "^[a-zA-Z0-9]*$"
-                      email:
-                        type: string
-                      address:
-                        type: object
-                        properties:
-                          type:
-                            type: string
-                          address_line1:
-                            type: string
-                          address_line2:
-                            type: string
-                          city:
-                            type: string
-                            pattern: "^[a-zA-Z0-9 _\\.]*$"
-                          state:
-                            type: string
-                            enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
-                          country:
-                            type: string
-                            pattern: "^[a-zA-Z]*$"
-                          pincode:
-                            type: string
-                            pattern: "^[0-9]*$"
-                      contact_number:
-                        type: object
-                        properties:
-                          type:
-                            type: string
-                          country_code:
-                            type: string
-                          phone_number:
-                            type: string
-                            pattern: "^[0-9]*$"
-                  buyer_details:
-                    type: object
-                    properties:
-                      place_of_supply:
-                        type: string
-                      masked_account_number:
-                        type: string
-                        pattern: "^[0-9]*$"
-                      beneficiary_name:
-                        type: string
-                      businessVPA:
-                        type: string
-                        pattern: "^[a-zA-Z0-9]*$"
-                      b2b_id:
-                        type: string
-                      gstin:
-                        type: string
-                        pattern: "^[a-zA-Z0-9]*$"
-                      legal_name:
-                        type: string
-                      trade_name:
-                        type: string
-                      state_code:
-                        type: string
-                        pattern: "^[a-zA-Z0-9]*$"
-                      email:
-                        type: string
-                      address:
-                        type: object
-                        properties:
-                          type:
-                            type: string
-                          address_line1:
-                            type: string
-                          address_line2:
-                            type: string
-                          city:
-                            type: string
-                            pattern: "^[a-zA-Z0-9 _\\.]*$"
-                          state:
-                            type: string
-                            enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
-                          country:
-                            type: string
-                            pattern: "^[a-zA-Z]*$"
-                          pincode:
-                            type: string
-                            pattern: "^[0-9]*$"
-                      contact_number:
-                        type: object
-                        properties:
-                          type:
-                            type: string
-                          country_code:
-                            type: string
-                          phone_number:
-                            type: string
-                            pattern: "^[0-9]*$"
-                  item_lists:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        serial_no:
-                          type: string
-                          pattern: "^[a-zA-Z0-9 _\\.]*$"
-                          description: serial number
-                        product_description:
-                          type: string
-                        is_service:
-                          type: string
-                        hsn_code:
-                          type: string
-                        quantity:
-                          type: string
-                        free_quantity:
-                          type: string
-                        unit:
-                          type: string
-                        unit_price:
-                          type: number
-                          format: float
-                        total_amt:
-                          type: number
-                          format: float
-                        assessment_amount:
-                          type: number
-                          format: float
-                        gst_rate:
-                          type: number
-                          format: float
-                        total_item_value:
-                          type: number
-                          format: float
-
-        400:
-          description: unable to make req pay
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  request_id:
-                    type: string
-                    example: "3ab43aa0-7187-44b1-8371-5fa448841da3"
-                    description: request id
-                  message:
-                    type: string
-                    example: "webhook not received from central unit"
-                    description: error message
-                  code:
-                    type: string
-                    example: "B2B010"
-                    description: error code
+  #  /b2b/v1/invoice/create:
+  #    post:
+  #      summary: Supplier raise an Invoice
+  #      description: Supplier raise an Invoice to buyer
+  #      tags:
+  #        - Invoice
+  #      operationId: CreateInvoice
+  #      parameters:
+  #        - $ref: '#/components/parameters/requestId'
+  #        - $ref: '#/components/parameters/appId'
+  #      requestBody:
+  #        description: Data from V2
+  #        required: true
+  #        content:
+  #          application/json:
+  #            schema:
+  #              type: object
+  #              properties:
+  #                supplier_invoice_number:
+  #                  type: string
+  #                  description: invoice number
+  #                  example: "INV-131HPAY"
+  #                # current_status:
+  #                #   type: string
+  #                #   pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                #   description: current status of invoice
+  #                # new_status:
+  #                #   type: string
+  #                #   pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                #   description: new status of invoice
+  #                # invoice_id:
+  #                #   type: string
+  #                #   pattern: "^[a-zA-Z0-9 ]*$"
+  #                #   description: invoice id
+  #                # upi_vpa:
+  #                #   type: string
+  #                #   pattern: "^[a-zA-Z0-9 ]*$"
+  #                #   description: upi vpa
+  #                # account_number:
+  #                #   type: string
+  #                #   pattern: "^[a-zA-Z0-9 ]*$"
+  #                #   description: account number
+  #                # account_ifsc:
+  #                #   type: string
+  #                #   pattern: "^[a-zA-Z0-9 ]*$"
+  #                #   description: account ifsc
+  #                einvoice:
+  #                  type: object
+  #                  properties:
+  #                    irn:
+  #                      type: string
+  #                      pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                      example: a5c12dca80e7433217ba4013750f2046f229
+  #                    irn_time_stamp:
+  #                      type: string
+  #                      pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                transaction_details:
+  #                  type: object
+  #                  properties:
+  #                    tax_scheme:
+  #                      type: string
+  #                      pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                      enum: [ GST ]
+  #                    supply_type:
+  #                      type: string
+  #                      pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                      enum: [ B2B, SEZWP, SEZWOP, EXPWP, DEXP, B2C ]
+  #                    reverse_charge_tax:
+  #                      type: string
+  #                      pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                      enum: [ YES, NO ]
+  #                    ecommerce_gstin:
+  #                      type: string
+  #                      pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                      example: 29GBJPW4215L
+  #                    igst_chargable:
+  #                      type: string
+  #                      pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                      enum: [ YES, NO ]
+  #                  required:
+  #                    - tax_scheme
+  #                    - supply_type
+  #                value_details:
+  #                  type: object
+  #                  properties:
+  #                    assessment_value:
+  #                      type: number
+  #                      format: float
+  #                      example: 10
+  #                    total_invoice_value:
+  #                      type: number
+  #                      format: float
+  #                      example: 10
+  #                  required:
+  #                    - assessment_value
+  #                    - total_invoice_value
+  #                supplier_details:
+  #                  type: object
+  #                  properties:
+  #                    # ifsc:
+  #                    #   type: string
+  #                    #   pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                    # masked_account_number:
+  #                    #   type: string
+  #                    #   pattern: "^[0-9]*$"
+  #                    # beneficiary_name:
+  #                    #   type: string
+  #                    # businessVPA:
+  #                    #   type: string
+  #                    #   pattern: "^[a-zA-Z0-9]*$"
+  #                    b2b_id:
+  #                      type: string
+  #                      example: "vatech_karnataka"
+  #                    gstin:
+  #                       type: string
+  #                       pattern: "^[a-zA-Z0-9]*$"
+  #                    legal_name:
+  #                       type: string
+  #                       example: "VA Tech Ventures"
+  #                    # trade_name:
+  #                    #   type: string
+  #                    state_code:
+  #                      type: string
+  #                      pattern: "^[0-9]{1,2}$"
+  #                      example: "16"
+  ##                    email:
+  ##                      type: string
+  ##                      pattern: "^[a-zA-Z0-9]*$"
+  ##                      example: "abc@gmail.com"
+  #                    address_id:
+  #                      type: string
+  #                      pattern: "^[a-zA-Z0-9]*$"
+  #                      example: "adr_113245yg32122435t"
+  ##                    contact_id:
+  ##                      type: string
+  ##                      pattern: "^[a-zA-Z0-9]*$"
+  ##                      example: "cnt_13efg645ew4542dse324"
+  #                  required:
+  #                    - b2b_id
+  #                    - legal_name
+  #                buyer_details:
+  #                  type: object
+  #                  properties:
+  #                    place_of_supply:
+  #                      type: string
+  #                      pattern: "^[0-9]{1,2}$"
+  #                      example: "16"
+  ##                    masked_account_number:
+  ##                      type: string
+  ##                      pattern: "^[0-9]*$"
+  ##                    beneficiary_name:
+  ##                      type: string
+  ##                    businessVPA:
+  ##                      type: string
+  ##                      pattern: "^[a-zA-Z0-9]*$"
+  #                    b2b_id:
+  #                      type: string
+  #                      example: "tally_solutions_1"
+  #                    gstin:
+  #                      type: string
+  #                      pattern: "^[a-zA-Z0-9]*$"
+  #                      example: "29AAACP7879D1Z0"
+  #                    legal_name:
+  #                      type: string
+  #                      example: "Tally Solutions Pvt Ltd "
+  #                    trade_name:
+  #                      type: string
+  #                      example: "Tally"
+  #                    state_code:
+  #                      type: string
+  #                      pattern: "^[0-9]{1,2}$"
+  #                      example: "16"
+  ##                    email:
+  ##                      type: string
+  #                    address:
+  #                      type: object
+  #                      properties:
+  #                        type:
+  #                          type: string
+  #                          enum: [ REGISTERED ADDRESS, CORPORATE OFFICE, BRANCH OFFICE, HEAD OFFICE, OTHER ]
+  #                        address_line1:
+  #                          type: string
+  #                          example: "3rd floor"
+  #                        address_line2:
+  #                          type: string
+  #                          example: "Tech park, Bengaluru"
+  #                        city:
+  #                          type: string
+  #                          pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                        state:
+  #                          type: string
+  #                          enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
+  #                        country:
+  #                          type: string
+  #                          pattern: "^[a-zA-Z]*$"
+  #                          example: INDIA
+  #                        pincode:
+  #                          type: string
+  #                          pattern: "^[0-9]*$"
+  #                          example: 560066
+  #                      required:
+  #                        - type
+  #                        - address_line1
+  #                        - city
+  #                        - state
+  #                        - country
+  #                        - pincode
+  #                #   contact_number:
+  ##                      type: object
+  ##                      properties:
+  ##                        type:
+  ##                          type: string
+  ##                        country_code:
+  ##                          type: string
+  ##                        phone_number:
+  ##                          type: string
+  ##                          pattern: "^[0-9]*$"
+  #                  required:
+  #                    - b2b_id
+  #                    - legal_name
+  #                    - trade_name
+  #                item_lists:
+  #                  type: array
+  #                  items:
+  #                    type: object
+  #                    properties:
+  #                      serial_no:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                        description: serial number
+  #                        example: "1"
+  #                      product_description:
+  #                        type: string
+  #                        example: "TnE Service"
+  #                      is_service:
+  #                        type: string
+  #                        enum: [ YES, NO ]
+  #                      hsn_code:
+  #                        type: string
+  #                        pattern: "^[0-9]*$"
+  #                        example: "997331"
+  #                      quantity:
+  #                        type: integer
+  #                        example: 1
+  #                      free_quantity:
+  #                        type: integer
+  #                        example: 1
+  #                      unit:
+  #                        type: string
+  #                        example: "UNT"
+  #                        pattern: "^[a-zA-Z]{3,8}$"
+  #                      unit_price:
+  #                        type: number
+  #                        format: float
+  #                        example: 1.0
+  #                      total_amount:
+  #                        type: number
+  #                        format: float
+  #                        example: 10
+  #                      assessment_amount:
+  #                        type: number
+  #                        format: float
+  #                        example: 10
+  #                      gst_rate:
+  #                        type: number
+  #                        format: float
+  #                        example: 0.0
+  #                      total_item_value:
+  #                        type: number
+  #                        format: float
+  #                        example: 10
+  #                    required:
+  #                      - serial_no
+  #                      - is_service
+  #                      - hsn_code
+  #                      - quantity
+  #                      - unit_price
+  #                      - total_amount
+  #                      - assessment_amount
+  #                      - gst_rate
+  #                      - total_item_value
+  #
+  #              required:
+  #                - supplier_invoice_number
+  #                - supplier_details
+  #                - item_lists
+  #                - value_details
+  #                - buyer_details
+  #      responses:
+  #        200:
+  #          description: Payment Info
+  #          content:
+  #            application/json:
+  #              schema:
+  #                type: object
+  #                properties:
+  #                  supplier_invoice_number:
+  #                    type: string
+  #                    description: invoice number
+  #                  current_status:
+  #                    type: string
+  #                    pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                    description: current status of invoice
+  #                  new_status:
+  #                    type: string
+  #                    pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                    description: new status of invoice
+  #                  invoice_id:
+  #                    type: string
+  #                    pattern: "^[a-zA-Z0-9 ]*$"
+  #                    description: invoice id
+  #                  upi_vpa:
+  #                    type: string
+  #                    pattern: "^[a-zA-Z0-9 ]*$"
+  #                    description: upi vpa
+  #                  account_number:
+  #                    type: string
+  #                    pattern: "^[a-zA-Z0-9 ]*$"
+  #                    description: account number
+  #                  account_ifsc:
+  #                    type: string
+  #                    pattern: "^[a-zA-Z0-9 ]*$"
+  #                    description: account ifsc
+  #                  einvoice:
+  #                    type: object
+  #                    properties:
+  #                      irn:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                      irn_time_stamp:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                  transaction_details:
+  #                    type: object
+  #                    properties:
+  #                      tax_scheme:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                      supply_type:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                      reverse_charge_tax:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                      ecommerce_gstin:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                      igst_chargable:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                  value_details:
+  #                    type: object
+  #                    properties:
+  #                      assessment_value:
+  #                        type: number
+  #                        format: float
+  #                      total_invoice_value:
+  #                        type: number
+  #                        format: float"
+  #                  supplier_details:
+  #                    type: object
+  #                    properties:
+  #                      ifsc:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                      masked_account_number:
+  #                        type: string
+  #                        pattern: "^[0-9]*$"
+  #                      beneficiary_name:
+  #                        type: string
+  #                      businessVPA:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9]*$"
+  #                      b2b_id:
+  #                        type: string
+  #                      gstin:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9]*$"
+  #                      legal_name:
+  #                        type: string
+  #                      trade_name:
+  #                        type: string
+  #                      state_code:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9]*$"
+  #                      email:
+  #                        type: string
+  #                      address:
+  #                        type: object
+  #                        properties:
+  #                          type:
+  #                            type: string
+  #                          address_line1:
+  #                            type: string
+  #                          address_line2:
+  #                            type: string
+  #                          city:
+  #                            type: string
+  #                            pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                          state:
+  #                            type: string
+  #                            enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
+  #                          country:
+  #                            type: string
+  #                            pattern: "^[a-zA-Z]*$"
+  #                          pincode:
+  #                            type: string
+  #                            pattern: "^[0-9]*$"
+  #                      contact_number:
+  #                        type: object
+  #                        properties:
+  #                          type:
+  #                            type: string
+  #                          country_code:
+  #                            type: string
+  #                          phone_number:
+  #                            type: string
+  #                            pattern: "^[0-9]*$"
+  #                  buyer_details:
+  #                    type: object
+  #                    properties:
+  #                      place_of_supply:
+  #                        type: string
+  #                      masked_account_number:
+  #                        type: string
+  #                        pattern: "^[0-9]*$"
+  #                      beneficiary_name:
+  #                        type: string
+  #                      businessVPA:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9]*$"
+  #                      b2b_id:
+  #                        type: string
+  #                      gstin:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9]*$"
+  #                      legal_name:
+  #                        type: string
+  #                      trade_name:
+  #                        type: string
+  #                      state_code:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9]*$"
+  #                      email:
+  #                        type: string
+  #                      address:
+  #                        type: object
+  #                        properties:
+  #                          type:
+  #                            type: string
+  #                          address_line1:
+  #                            type: string
+  #                          address_line2:
+  #                            type: string
+  #                          city:
+  #                            type: string
+  #                            pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                          state:
+  #                            type: string
+  #                            enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
+  #                          country:
+  #                            type: string
+  #                            pattern: "^[a-zA-Z]*$"
+  #                          pincode:
+  #                            type: string
+  #                            pattern: "^[0-9]*$"
+  #                      contact_number:
+  #                        type: object
+  #                        properties:
+  #                          type:
+  #                            type: string
+  #                          country_code:
+  #                            type: string
+  #                          phone_number:
+  #                            type: string
+  #                            pattern: "^[0-9]*$"
+  #                  item_lists:
+  #                    type: array
+  #                    items:
+  #                      type: object
+  #                      properties:
+  #                        serial_no:
+  #                          type: string
+  #                          pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                          description: serial number
+  #                        product_description:
+  #                          type: string
+  #                        is_service:
+  #                          type: string
+  #                        hsn_code:
+  #                          type: string
+  #                        quantity:
+  #                          type: string
+  #                        free_quantity:
+  #                          type: string
+  #                        unit:
+  #                          type: string
+  #                        unit_price:
+  #                          type: number
+  #                          format: float
+  #                        total_amt:
+  #                          type: number
+  #                          format: float
+  #                        assessment_amount:
+  #                          type: number
+  #                          format: float
+  #                        gst_rate:
+  #                          type: number
+  #                          format: float
+  #                        total_item_value:
+  #                          type: number
+  #                          format: float
+  #
+  #        400:
+  #          description: unable to make req pay
+  #          content:
+  #            application/json:
+  #              schema:
+  #                type: object
+  #                properties:
+  #                  request_id:
+  #                    type: string
+  #                    example: "3ab43aa0-7187-44b1-8371-5fa448841da3"
+  #                    description: request id
+  #                  message:
+  #                    type: string
+  #                    example: "webhook not received from central unit"
+  #                    description: error message
+  #                  code:
+  #                    type: string
+  #                    example: "B2B010"
+  #                    description: error code
 
   /b2b/v1/invoice/supplier/status/change:
     post:
@@ -3631,493 +4887,493 @@ paths:
                     example: "B2B010"
                     description: error code
 
-  /b2b/v1/invoice/edit:
-    post:
-      summary: Supplier edits an Invoice
-      description: Supplier edits an Invoice to buyer
-      tags:
-        - Invoice
-      operationId: EditInvoice
-      parameters:
-        - $ref: '#/components/parameters/requestId'
-        - $ref: '#/components/parameters/appId'
-      requestBody:
-        description: Data from V2
-        required: true
-        content:
-          application/json:
-            schema:
-              type: object
-              properties:
-                supplier_invoice_number:
-                  type: string
-                  description: invoice number
-                current_status:
-                  type: string
-                  pattern: "^[a-zA-Z0-9 _\\.]*$"
-                  description: current status of invoice
-                new_status:
-                  type: string
-                  pattern: "^[a-zA-Z0-9 _\\.]*$"
-                  description: new status of invoice
-                invoice_id:
-                  type: string
-                  pattern: "^[a-zA-Z0-9 ]*$"
-                  description: invoice id
-                upi_vpa:
-                  type: string
-                  pattern: "^[a-zA-Z0-9 ]*$"
-                  description: upi vpa
-                account_number:
-                  type: string
-                  pattern: "^[a-zA-Z0-9 ]*$"
-                  description: account number
-                account_ifsc:
-                  type: string
-                  pattern: "^[a-zA-Z0-9 ]*$"
-                  description: account ifsc
-                einvoice:
-                  type: object
-                  properties:
-                    irn:
-                      type: string
-                      pattern: "^[a-zA-Z0-9 _\\.]*$"
-                    irn_time_stamp:
-                      type: string
-                      pattern: "^[a-zA-Z0-9 _\\.]*$"
-                transaction_details:
-                  type: object
-                  properties:
-                    tax_scheme:
-                      type: string
-                      pattern: "^[a-zA-Z0-9 _\\.]*$"
-                    supply_type:
-                      type: string
-                      pattern: "^[a-zA-Z0-9 _\\.]*$"
-                    reverse_charge_tax:
-                      type: string
-                      pattern: "^[a-zA-Z0-9 _\\.]*$"
-                    ecommerce_gstin:
-                      type: string
-                      pattern: "^[a-zA-Z0-9 _\\.]*$"
-                    igst_chargable:
-                      type: string
-                      pattern: "^[a-zA-Z0-9 _\\.]*$"
-                value_details:
-                  type: object
-                  properties:
-                    assessment_value:
-                      type: number
-                      format: float
-                    total_invoice_value:
-                      type: number
-                      format: float"
-                supplier_details:
-                  type: object
-                  properties:
-                    ifsc:
-                      type: string
-                      pattern: "^[a-zA-Z0-9 _\\.]*$"
-                    masked_account_number:
-                      type: string
-                      pattern: "^[0-9]*$"
-                    beneficiary_name:
-                      type: string
-                    businessVPA:
-                      type: string
-                      pattern: "^[a-zA-Z0-9]*$"
-                    b2b_id:
-                      type: string
-                    gstin:
-                      type: string
-                      pattern: "^[a-zA-Z0-9]*$"
-                    legal_name:
-                      type: string
-                    trade_name:
-                      type: string
-                    state_code:
-                      type: string
-                      pattern: "^[a-zA-Z0-9]*$"
-                    email:
-                      type: string
-                    address:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                        address_line1:
-                          type: string
-                        address_line2:
-                          type: string
-                        city:
-                          type: string
-                          pattern: "^[a-zA-Z0-9 _\\.]*$"
-                        state:
-                          type: string
-                          enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
-                        country:
-                          type: string
-                          pattern: "^[a-zA-Z]*$"
-                        pincode:
-                          type: string
-                          pattern: "^[0-9]*$"
-                    contact_number:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                        country_code:
-                          type: string
-                        phone_number:
-                          type: string
-                          pattern: "^[0-9]*$"
-                buyer_details:
-                  type: object
-                  properties:
-                    place_of_supply:
-                      type: string
-                    masked_account_number:
-                      type: string
-                      pattern: "^[0-9]*$"
-                    beneficiary_name:
-                      type: string
-                    businessVPA:
-                      type: string
-                      pattern: "^[a-zA-Z0-9]*$"
-                    b2b_id:
-                      type: string
-                    gstin:
-                      type: string
-                      pattern: "^[a-zA-Z0-9]*$"
-                    legal_name:
-                      type: string
-                    trade_name:
-                      type: string
-                    state_code:
-                      type: string
-                      pattern: "^[a-zA-Z0-9]*$"
-                    email:
-                      type: string
-                    address:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                        address_line1:
-                          type: string
-                        address_line2:
-                          type: string
-                        city:
-                          type: string
-                          pattern: "^[a-zA-Z0-9 _\\.]*$"
-                        state:
-                          type: string
-                          enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
-                        country:
-                          type: string
-                          pattern: "^[a-zA-Z]*$"
-                        pincode:
-                          type: string
-                          pattern: "^[0-9]*$"
-                    contact_number:
-                      type: object
-                      properties:
-                        type:
-                          type: string
-                        country_code:
-                          type: string
-                        phone_number:
-                          type: string
-                          pattern: "^[0-9]*$"
-                item_lists:
-                  type: array
-                  items:
-                    type: object
-                    properties:
-                      serial_no:
-                        type: string
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                        description: serial number
-                      product_description:
-                        type: string
-                      is_service:
-                        type: string
-                      hsn_code:
-                        type: string
-                      quantity:
-                        type: string
-                      free_quantity:
-                        type: string
-                      unit:
-                        type: string
-                      unit_price:
-                        type: number
-                        format: float
-                      total_amt:
-                        type: number
-                        format: float
-                      assessment_amount:
-                        type: number
-                        format: float
-                      gst_rate:
-                        type: number
-                        format: float
-                      total_item_value:
-                        type: number
-                        format: float
-
-              required:
-                - supplier_invoice_number
-                - einvoice
-                - transaction_details
-                - supplier_details
-                - item_lists
-                - value_details
-                - buyer_details
-      responses:
-        200:
-          description: Payment Info
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  supplier_invoice_number:
-                    type: string
-                    description: invoice number
-                  current_status:
-                    type: string
-                    pattern: "^[a-zA-Z0-9 _\\.]*$"
-                    description: current status of invoice
-                  new_status:
-                    type: string
-                    pattern: "^[a-zA-Z0-9 _\\.]*$"
-                    description: new status of invoice
-                  invoice_id:
-                    type: string
-                    pattern: "^[a-zA-Z0-9 ]*$"
-                    description: invoice id
-                  upi_vpa:
-                    type: string
-                    pattern: "^[a-zA-Z0-9 ]*$"
-                    description: upi vpa
-                  account_number:
-                    type: string
-                    pattern: "^[a-zA-Z0-9 ]*$"
-                    description: account number
-                  account_ifsc:
-                    type: string
-                    pattern: "^[a-zA-Z0-9 ]*$"
-                    description: account ifsc
-                  einvoice:
-                    type: object
-                    properties:
-                      irn:
-                        type: string
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                      irn_time_stamp:
-                        type: string
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                  transaction_details:
-                    type: object
-                    properties:
-                      tax_scheme:
-                        type: string
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                      supply_type:
-                        type: string
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                      reverse_charge_tax:
-                        type: string
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                      ecommerce_gstin:
-                        type: string
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                      igst_chargable:
-                        type: string
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                  value_details:
-                    type: object
-                    properties:
-                      assessment_value:
-                        type: number
-                        format: float
-                      total_invoice_value:
-                        type: number
-                        format: float"
-                  supplier_details:
-                    type: object
-                    properties:
-                      ifsc:
-                        type: string
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                      masked_account_number:
-                        type: string
-                        pattern: "^[0-9]*$"
-                      beneficiary_name:
-                        type: string
-                      businessVPA:
-                        type: string
-                        pattern: "^[a-zA-Z0-9]*$"
-                      b2b_id:
-                        type: string
-                      gstin:
-                        type: string
-                        pattern: "^[a-zA-Z0-9]*$"
-                      legal_name:
-                        type: string
-                      trade_name:
-                        type: string
-                      state_code:
-                        type: string
-                        pattern: "^[a-zA-Z0-9]*$"
-                      email:
-                        type: string
-                      address:
-                        type: object
-                        properties:
-                          type:
-                            type: string
-                          address_line1:
-                            type: string
-                          address_line2:
-                            type: string
-                          city:
-                            type: string
-                            pattern: "^[a-zA-Z0-9 _\\.]*$"
-                          state:
-                            type: string
-                            enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
-                          country:
-                            type: string
-                            pattern: "^[a-zA-Z]*$"
-                          pincode:
-                            type: string
-                            pattern: "^[0-9]*$"
-                      contact_number:
-                        type: object
-                        properties:
-                          type:
-                            type: string
-                          country_code:
-                            type: string
-                          phone_number:
-                            type: string
-                            pattern: "^[0-9]*$"
-                  buyer_details:
-                    type: object
-                    properties:
-                      place_of_supply:
-                        type: string
-                      masked_account_number:
-                        type: string
-                        pattern: "^[0-9]*$"
-                      beneficiary_name:
-                        type: string
-                      businessVPA:
-                        type: string
-                        pattern: "^[a-zA-Z0-9]*$"
-                      b2b_id:
-                        type: string
-                      gstin:
-                        type: string
-                        pattern: "^[a-zA-Z0-9]*$"
-                      legal_name:
-                        type: string
-                      trade_name:
-                        type: string
-                      state_code:
-                        type: string
-                        pattern: "^[a-zA-Z0-9]*$"
-                      email:
-                        type: string
-                      address:
-                        type: object
-                        properties:
-                          type:
-                            type: string
-                          address_line1:
-                            type: string
-                          address_line2:
-                            type: string
-                          city:
-                            type: string
-                            pattern: "^[a-zA-Z0-9 _\\.]*$"
-                          state:
-                            type: string
-                            enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
-                          country:
-                            type: string
-                            pattern: "^[a-zA-Z]*$"
-                          pincode:
-                            type: string
-                            pattern: "^[0-9]*$"
-                      contact_number:
-                        type: object
-                        properties:
-                          type:
-                            type: string
-                          country_code:
-                            type: string
-                          phone_number:
-                            type: string
-                            pattern: "^[0-9]*$"
-                  item_lists:
-                    type: array
-                    items:
-                      type: object
-                      properties:
-                        serial_no:
-                          type: string
-                          pattern: "^[a-zA-Z0-9 _\\.]*$"
-                          description: serial number
-                        product_description:
-                          type: string
-                        is_service:
-                          type: string
-                        hsn_code:
-                          type: string
-                        quantity:
-                          type: string
-                        free_quantity:
-                          type: string
-                        unit:
-                          type: string
-                        unit_price:
-                          type: number
-                          format: float
-                        total_amt:
-                          type: number
-                          format: float
-                        assessment_amount:
-                          type: number
-                          format: float
-                        gst_rate:
-                          type: number
-                          format: float
-                        total_item_value:
-                          type: number
-                          format: float
-
-        400:
-          description: unable to make req pay
-          content:
-            application/json:
-              schema:
-                type: object
-                properties:
-                  request_id:
-                    type: string
-                    example: "3ab43aa0-7187-44b1-8371-5fa448841da3"
-                    description: request id
-                  message:
-                    type: string
-                    example: "webhook not received from central unit"
-                    description: error message
-                  code:
-                    type: string
-                    example: "B2B010"
-                    description: error code
+  #  /b2b/v1/invoice/edit:
+  #    post:
+  #      summary: Supplier edits an Invoice
+  #      description: Supplier edits an Invoice to buyer
+  #      tags:
+  #        - Invoice
+  #      operationId: EditInvoice
+  #      parameters:
+  #        - $ref: '#/components/parameters/requestId'
+  #        - $ref: '#/components/parameters/appId'
+  #      requestBody:
+  #        description: Data from V2
+  #        required: true
+  #        content:
+  #          application/json:
+  #            schema:
+  #              type: object
+  #              properties:
+  #                supplier_invoice_number:
+  #                  type: string
+  #                  description: invoice number
+  #                current_status:
+  #                  type: string
+  #                  pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                  description: current status of invoice
+  #                new_status:
+  #                  type: string
+  #                  pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                  description: new status of invoice
+  #                invoice_id:
+  #                  type: string
+  #                  pattern: "^[a-zA-Z0-9 ]*$"
+  #                  description: invoice id
+  #                upi_vpa:
+  #                  type: string
+  #                  pattern: "^[a-zA-Z0-9 ]*$"
+  #                  description: upi vpa
+  #                account_number:
+  #                  type: string
+  #                  pattern: "^[a-zA-Z0-9 ]*$"
+  #                  description: account number
+  #                account_ifsc:
+  #                  type: string
+  #                  pattern: "^[a-zA-Z0-9 ]*$"
+  #                  description: account ifsc
+  #                einvoice:
+  #                  type: object
+  #                  properties:
+  #                    irn:
+  #                      type: string
+  #                      pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                    irn_time_stamp:
+  #                      type: string
+  #                      pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                transaction_details:
+  #                  type: object
+  #                  properties:
+  #                    tax_scheme:
+  #                      type: string
+  #                      pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                    supply_type:
+  #                      type: string
+  #                      pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                    reverse_charge_tax:
+  #                      type: string
+  #                      pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                    ecommerce_gstin:
+  #                      type: string
+  #                      pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                    igst_chargable:
+  #                      type: string
+  #                      pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                value_details:
+  #                  type: object
+  #                  properties:
+  #                    assessment_value:
+  #                      type: number
+  #                      format: float
+  #                    total_invoice_value:
+  #                      type: number
+  #                      format: float"
+  #                supplier_details:
+  #                  type: object
+  #                  properties:
+  #                    ifsc:
+  #                      type: string
+  #                      pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                    masked_account_number:
+  #                      type: string
+  #                      pattern: "^[0-9]*$"
+  #                    beneficiary_name:
+  #                      type: string
+  #                    businessVPA:
+  #                      type: string
+  #                      pattern: "^[a-zA-Z0-9]*$"
+  #                    b2b_id:
+  #                      type: string
+  #                    gstin:
+  #                      type: string
+  #                      pattern: "^[a-zA-Z0-9]*$"
+  #                    legal_name:
+  #                      type: string
+  #                    trade_name:
+  #                      type: string
+  #                    state_code:
+  #                      type: string
+  #                      pattern: "^[a-zA-Z0-9]*$"
+  #                    email:
+  #                      type: string
+  #                    address:
+  #                      type: object
+  #                      properties:
+  #                        type:
+  #                          type: string
+  #                        address_line1:
+  #                          type: string
+  #                        address_line2:
+  #                          type: string
+  #                        city:
+  #                          type: string
+  #                          pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                        state:
+  #                          type: string
+  #                          enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
+  #                        country:
+  #                          type: string
+  #                          pattern: "^[a-zA-Z]*$"
+  #                        pincode:
+  #                          type: string
+  #                          pattern: "^[0-9]*$"
+  #                    contact_number:
+  #                      type: object
+  #                      properties:
+  #                        type:
+  #                          type: string
+  #                        country_code:
+  #                          type: string
+  #                        phone_number:
+  #                          type: string
+  #                          pattern: "^[0-9]*$"
+  #                buyer_details:
+  #                  type: object
+  #                  properties:
+  #                    place_of_supply:
+  #                      type: string
+  #                    masked_account_number:
+  #                      type: string
+  #                      pattern: "^[0-9]*$"
+  #                    beneficiary_name:
+  #                      type: string
+  #                    businessVPA:
+  #                      type: string
+  #                      pattern: "^[a-zA-Z0-9]*$"
+  #                    b2b_id:
+  #                      type: string
+  #                    gstin:
+  #                      type: string
+  #                      pattern: "^[a-zA-Z0-9]*$"
+  #                    legal_name:
+  #                      type: string
+  #                    trade_name:
+  #                      type: string
+  #                    state_code:
+  #                      type: string
+  #                      pattern: "^[a-zA-Z0-9]*$"
+  #                    email:
+  #                      type: string
+  #                    address:
+  #                      type: object
+  #                      properties:
+  #                        type:
+  #                          type: string
+  #                        address_line1:
+  #                          type: string
+  #                        address_line2:
+  #                          type: string
+  #                        city:
+  #                          type: string
+  #                          pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                        state:
+  #                          type: string
+  #                          enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
+  #                        country:
+  #                          type: string
+  #                          pattern: "^[a-zA-Z]*$"
+  #                        pincode:
+  #                          type: string
+  #                          pattern: "^[0-9]*$"
+  #                    contact_number:
+  #                      type: object
+  #                      properties:
+  #                        type:
+  #                          type: string
+  #                        country_code:
+  #                          type: string
+  #                        phone_number:
+  #                          type: string
+  #                          pattern: "^[0-9]*$"
+  #                item_lists:
+  #                  type: array
+  #                  items:
+  #                    type: object
+  #                    properties:
+  #                      serial_no:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                        description: serial number
+  #                      product_description:
+  #                        type: string
+  #                      is_service:
+  #                        type: string
+  #                      hsn_code:
+  #                        type: string
+  #                      quantity:
+  #                        type: string
+  #                      free_quantity:
+  #                        type: string
+  #                      unit:
+  #                        type: string
+  #                      unit_price:
+  #                        type: number
+  #                        format: float
+  #                      total_amt:
+  #                        type: number
+  #                        format: float
+  #                      assessment_amount:
+  #                        type: number
+  #                        format: float
+  #                      gst_rate:
+  #                        type: number
+  #                        format: float
+  #                      total_item_value:
+  #                        type: number
+  #                        format: float
+  #
+  #              required:
+  #                - supplier_invoice_number
+  #                - einvoice
+  #                - transaction_details
+  #                - supplier_details
+  #                - item_lists
+  #                - value_details
+  #                - buyer_details
+  #      responses:
+  #        200:
+  #          description: Payment Info
+  #          content:
+  #            application/json:
+  #              schema:
+  #                type: object
+  #                properties:
+  #                  supplier_invoice_number:
+  #                    type: string
+  #                    description: invoice number
+  #                  current_status:
+  #                    type: string
+  #                    pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                    description: current status of invoice
+  #                  new_status:
+  #                    type: string
+  #                    pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                    description: new status of invoice
+  #                  invoice_id:
+  #                    type: string
+  #                    pattern: "^[a-zA-Z0-9 ]*$"
+  #                    description: invoice id
+  #                  upi_vpa:
+  #                    type: string
+  #                    pattern: "^[a-zA-Z0-9 ]*$"
+  #                    description: upi vpa
+  #                  account_number:
+  #                    type: string
+  #                    pattern: "^[a-zA-Z0-9 ]*$"
+  #                    description: account number
+  #                  account_ifsc:
+  #                    type: string
+  #                    pattern: "^[a-zA-Z0-9 ]*$"
+  #                    description: account ifsc
+  #                  einvoice:
+  #                    type: object
+  #                    properties:
+  #                      irn:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                      irn_time_stamp:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                  transaction_details:
+  #                    type: object
+  #                    properties:
+  #                      tax_scheme:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                      supply_type:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                      reverse_charge_tax:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                      ecommerce_gstin:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                      igst_chargable:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                  value_details:
+  #                    type: object
+  #                    properties:
+  #                      assessment_value:
+  #                        type: number
+  #                        format: float
+  #                      total_invoice_value:
+  #                        type: number
+  #                        format: float"
+  #                  supplier_details:
+  #                    type: object
+  #                    properties:
+  #                      ifsc:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                      masked_account_number:
+  #                        type: string
+  #                        pattern: "^[0-9]*$"
+  #                      beneficiary_name:
+  #                        type: string
+  #                      businessVPA:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9]*$"
+  #                      b2b_id:
+  #                        type: string
+  #                      gstin:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9]*$"
+  #                      legal_name:
+  #                        type: string
+  #                      trade_name:
+  #                        type: string
+  #                      state_code:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9]*$"
+  #                      email:
+  #                        type: string
+  #                      address:
+  #                        type: object
+  #                        properties:
+  #                          type:
+  #                            type: string
+  #                          address_line1:
+  #                            type: string
+  #                          address_line2:
+  #                            type: string
+  #                          city:
+  #                            type: string
+  #                            pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                          state:
+  #                            type: string
+  #                            enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
+  #                          country:
+  #                            type: string
+  #                            pattern: "^[a-zA-Z]*$"
+  #                          pincode:
+  #                            type: string
+  #                            pattern: "^[0-9]*$"
+  #                      contact_number:
+  #                        type: object
+  #                        properties:
+  #                          type:
+  #                            type: string
+  #                          country_code:
+  #                            type: string
+  #                          phone_number:
+  #                            type: string
+  #                            pattern: "^[0-9]*$"
+  #                  buyer_details:
+  #                    type: object
+  #                    properties:
+  #                      place_of_supply:
+  #                        type: string
+  #                      masked_account_number:
+  #                        type: string
+  #                        pattern: "^[0-9]*$"
+  #                      beneficiary_name:
+  #                        type: string
+  #                      businessVPA:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9]*$"
+  #                      b2b_id:
+  #                        type: string
+  #                      gstin:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9]*$"
+  #                      legal_name:
+  #                        type: string
+  #                      trade_name:
+  #                        type: string
+  #                      state_code:
+  #                        type: string
+  #                        pattern: "^[a-zA-Z0-9]*$"
+  #                      email:
+  #                        type: string
+  #                      address:
+  #                        type: object
+  #                        properties:
+  #                          type:
+  #                            type: string
+  #                          address_line1:
+  #                            type: string
+  #                          address_line2:
+  #                            type: string
+  #                          city:
+  #                            type: string
+  #                            pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                          state:
+  #                            type: string
+  #                            enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
+  #                          country:
+  #                            type: string
+  #                            pattern: "^[a-zA-Z]*$"
+  #                          pincode:
+  #                            type: string
+  #                            pattern: "^[0-9]*$"
+  #                      contact_number:
+  #                        type: object
+  #                        properties:
+  #                          type:
+  #                            type: string
+  #                          country_code:
+  #                            type: string
+  #                          phone_number:
+  #                            type: string
+  #                            pattern: "^[0-9]*$"
+  #                  item_lists:
+  #                    type: array
+  #                    items:
+  #                      type: object
+  #                      properties:
+  #                        serial_no:
+  #                          type: string
+  #                          pattern: "^[a-zA-Z0-9 _\\.]*$"
+  #                          description: serial number
+  #                        product_description:
+  #                          type: string
+  #                        is_service:
+  #                          type: string
+  #                        hsn_code:
+  #                          type: string
+  #                        quantity:
+  #                          type: string
+  #                        free_quantity:
+  #                          type: string
+  #                        unit:
+  #                          type: string
+  #                        unit_price:
+  #                          type: number
+  #                          format: float
+  #                        total_amt:
+  #                          type: number
+  #                          format: float
+  #                        assessment_amount:
+  #                          type: number
+  #                          format: float
+  #                        gst_rate:
+  #                          type: number
+  #                          format: float
+  #                        total_item_value:
+  #                          type: number
+  #                          format: float
+  #
+  #        400:
+  #          description: unable to make req pay
+  #          content:
+  #            application/json:
+  #              schema:
+  #                type: object
+  #                properties:
+  #                  request_id:
+  #                    type: string
+  #                    example: "3ab43aa0-7187-44b1-8371-5fa448841da3"
+  #                    description: request id
+  #                  message:
+  #                    type: string
+  #                    example: "webhook not received from central unit"
+  #                    description: error message
+  #                  code:
+  #                    type: string
+  #                    example: "B2B010"
+  #                    description: error code
 
   /b2b/v1/finance/req_finance:
     post:
@@ -5792,6 +7048,409 @@ paths:
 
 components:
   schemas:
+    PartnerDispatchDetails:
+      type: object
+      required:
+        - gstin
+        - legal_name
+        - state_code
+        - address
+      properties:
+        gstin:
+          type: string
+        legal_name:
+          type: string
+        trade_name:
+          type: string
+        state_code:
+          type: string
+        address:
+          type: object
+          required:
+            - address_line1
+            - city
+            - state
+            - country
+            - pincode
+          properties:
+            type:
+              type: string
+            address_line1:
+              type: string
+            address_line2:
+              type: string
+            city:
+              type: string
+            state:
+              type: string
+            country:
+              type: string
+            pincode:
+              type: string
+        contact_number:
+          type: object
+          required:
+            - type
+            - country_code
+            - phone_number
+          properties:
+            type:
+              type: string
+            country_code:
+              type: string
+            phone_number:
+              type: string
+        email:
+          type: string
+
+    PartnerAdvancePaymentDetails:
+      type: object
+      required:
+        - payee_name
+        - paid_amount
+        - pending_due_amount
+      properties:
+        payee_name:
+          type: string
+        mode:
+          type: string
+        payment_terms:
+          type: string
+        payment_instruction:
+          type: string
+        credit_transfer:
+          type: string
+        direct_debit:
+          type: string
+        credit_days:
+          type: integer
+        paid_amount:
+          type: number
+          format: float64
+        pending_due_amount:
+          type: number
+          format: float64
+
+    PartnerInvoiceReferenceDetails:
+      type: object
+      required:
+        - invoice_start_date
+      properties:
+        invoice_remarks:
+          type: string
+        invoice_start_date:
+          type: string
+        invoice_end_date:
+          type: string
+
+    PartnerPrecedingInvoiceDetails:
+      type: object
+      required:
+        - invoice_number
+        - date
+      properties:
+        invoice_number:
+          type: string
+        date:
+          type: string
+        other_reference_no:
+          type: string
+
+    PartnerContractReferenceDetails:
+      type: object
+      properties:
+        receipt_advice_no:
+          type: string
+        receipt_advice_date:
+          type: string
+        batch_reference_no:
+          type: string
+        contract_reference_no:
+          type: string
+        extra_reference_no:
+          type: string
+        project_reference_no:
+          type: string
+
+    PartnerExportDetails:
+      type: object
+      required:
+        - shipBillNo
+        - shipBillDate
+        - countryCode
+        - exportDuty
+      properties:
+        ship_bill_no:
+          type: string
+        ship_bill_date:
+          type: string
+        port:
+          type: string
+        refund_claim:
+          type: string
+        foreign_currency:
+          type: string
+        country_code:
+          type: string
+        export_duty:
+          type: number
+          format: float64
+
+    PartnerRecurringPayments:
+      type: object
+      required:
+        - originalInvoiceId
+        - frequency
+        - endDate
+      properties:
+        original_invoice_id:
+          type: string
+        frequency:
+          type: string
+        start_date:
+          type: string
+        end_date:
+          type: string
+        mandate_details:
+          type: string
+        mandate_execution_date:
+          type: string
+        mandate_amount:
+          type: number
+          format: float64
+
+    PaymentMilestone:
+      type: object
+      required:
+        - milestone_date
+        - due_amount
+      properties:
+        milestone_date:
+          type: string
+        due_amount:
+          type: number
+          format: float64
+
+    PartnerShippingTermsDetails:
+      type: object
+      required:
+        - terms
+        - bearing_party
+        - charges
+      properties:
+        terms:
+          type: string
+        bearing_party:
+          type: string
+        charges:
+          type: number
+          format: float64
+    FetchInvoicesStatusResponse:
+      type: object
+      properties:
+        msg:
+          type: string
+          example: ""
+        status:
+          type: string
+          example: SUCCESS
+        code:
+          type: string
+          example: ""
+        business_id:
+          type: string
+          example: ORGeb7678721cc849e098e823096494efac
+        b2b_ids:
+          type: array
+          items:
+            type: string
+          example: [ "vatech_karnataka" ]
+        from_date:
+          type: string
+          format: date-time
+          example: 2025-03-05T00:00:00Z
+        to_date:
+          type: string
+          format: date-time
+          example: 2025-03-12T01:52:25Z
+        invoice_count:
+          type: integer
+          example: 11
+        total_amount:
+          type: number
+          format: float
+          example: 9031
+        invoice_status:
+          type: string
+          example: SENT TO BUYER
+        invoice_status_details:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceStatusDetailV2'
+
+    InvoiceStatusDetailV2:
+      type: object
+      properties:
+        invoice_date:
+          type: string
+          format: date-time
+          example: 2025-03-05T13:56:14+05:30
+        invoice_id:
+          type: string
+          example: INV1c159180b67a4a13b4bb5070399cfae4
+        supplier_invoice_number:
+          type: string
+          example: 4564abe6-eaaa-4982-9127-543c8c21a8f0
+        supplier_details:
+          $ref: '#/components/schemas/SupplierDetail'
+        buyer_details:
+          $ref: '#/components/schemas/BuyerDetail'
+        value_details:
+          $ref: '#/components/schemas/ValueDetail'
+
+    ValueDetail:
+      type: object
+      properties:
+        assessment_value:
+          type: number
+          format: float
+          example: 1000
+        total_invoice_value:
+          type: number
+          format: float
+          example: 1000
+
+    SupplierDetail:
+      type: object
+      properties:
+        masked_account_number:
+          type: string
+          example: "3660"
+        ifsc:
+          type: string
+          example: HDFC0000077
+        beneficiary_name:
+          type: string
+          example: VA TECH VENTURES PRIVATE LIMITED
+        businessVPA:
+          type: string
+          example: AAECSBIN57021
+        b2b_id:
+          type: string
+          example: vatech_karnataka
+        gstin:
+          type: string
+          example: 29AAECV1948B2ZB
+        legal_name:
+          type: string
+          example: VA Tech Ventures Private Limited
+        trade_name:
+          type: string
+          example: VA Tech
+        state_code:
+          type: string
+          example: "29"
+        address:
+          type: object
+          properties:
+            type:
+              type: string
+              example: OTHER
+            address_line1:
+              type: string
+              example: 3rd Floor, No. 7 Delta Block Sigma Soft Tech Park Whitefield Main Road
+            address_line2:
+              type: string
+              example: ""
+            city:
+              type: string
+              example: Bangalore
+            state:
+              type: string
+              example: KARNATAKA
+            country:
+              type: string
+              example: INDIA
+            pincode:
+              type: string
+              example: "560066"
+        contact_number:
+          type: object
+          properties:
+            type:
+              type: string
+              example: MOBILE
+            country_code:
+              type: string
+              example: +91
+            phone_number:
+              type: string
+              example: 9804129548
+        email:
+          type: string
+          example: karan.gupta@happay.com
+
+    BuyerDetail:
+      type: object
+      properties:
+        b2b_id:
+          type: string
+          example: time_education_haryana_4
+        gstin:
+          type: string
+          example: 06AABCT6144J1ZA
+        legal_name:
+          type: string
+          example: 29
+        trade_name:
+          type: string
+          example: freshworks
+        state_code:
+          type: string
+          example: "29"
+        place_of_supply:
+          type: string
+          example: "29"
+        address:
+          type: object
+          properties:
+            type:
+              type: string
+              example: OTHER
+            address_line1:
+              type: string
+              example: No.769 and 770 100 feet road,, HAL II stage
+            address_line2:
+              type: string
+              example: ""
+            city:
+              type: string
+              example: Bengaluru
+            state:
+              type: string
+              example: KARNATAKA
+            country:
+              type: string
+              example: INDIA
+            pincode:
+              type: string
+              example: "560038"
+        contact_number:
+          type: object
+          properties:
+            type:
+              type: string
+              example: MOBILE
+            country_code:
+              type: string
+              example: +91
+            phone_number:
+              type: string
+              example: 7977380104
+        email:
+          type: string
+          example: arun.soni+cred_contact@happay.com
+
     BusinessInfo:
       type: object
       properties:
