@@ -13,6 +13,7 @@ tags:
   - name: Onboarding
   - name: Tally Onboarding
   - name: Tally Invoice
+  - name: Tally Payment
   - name: Invoice
   - name: Financing
   - name: CMS
@@ -22,16 +23,16 @@ tags:
 paths:
   /b2b/v1/payments/initiate:
     post:
-      summary: Buyer req pay
-      description: Buyer trying to pay an invoice
+      summary: Request Payment
+      description: Initiates a payment request from buyer to supplier including invoice details and bank information.
+      operationId: InitiatePayment
       tags:
-        - Payment
-      operationId: ReqPay
+        - Tally Payment
       parameters:
         - $ref: '#/components/parameters/requestId'
         - $ref: '#/components/parameters/appId'
+        - $ref: '#/components/parameters/appToken'
       requestBody:
-        description: Data from V2
         required: true
         content:
           application/json:
@@ -40,63 +41,50 @@ paths:
               properties:
                 buyer_b2b_id:
                   type: string
-                  pattern: "^[a-zA-Z0-9 _\\.]*$"
-                  description: buyer b2b id
-                  example: "buyer_b2b_id"
+                  example: tatasteel_MH
                 supplier_b2b_id:
                   type: string
-                  pattern: "^[a-zA-Z0-9 _\\.]*$"
-                  description: supplier b2b id
-                  example: "supplier_b2b_id"
-                type:
-                  type: string
-                  enum: [ONPLATFORM, OFFPLATFORM]
-                  description: type of payment
+                  example: sparrow_karnataka
                 mode:
                   type: string
-                  enum: [INTERNET BANKING, DEBIT CARD, CREDIT CARD, IMPS, CASH, UPI, WALLET, NEFT, PREPAID CARD, ACCOUNT TRANSFER, CHEQUE]
-                  description: payment mode
+                  example: INTERNET BANKING
+                type:
+                  type: string
+                  example: OFFPLATFORM
+                currency:
+                  type: string
+                  example: INR
                 utr:
                   type: string
-                  pattern: "^[a-zA-Z0-9 _\\.]*$"
-                  description: utr of payment
-                  example: "HSBC234E3RY93HD3"
-                # currency:
-                #   type: string
-                #   pattern: "^[a-zA-Z0-9 ]*$"
-                #   description: currency
+                  example: uruwegfu43grejsdbcgu83r4gf3
                 invoices_payments_details:
                   type: array
                   items:
                     type: object
+                    required:
+                      - invoice_id
+                      - invoice_amount
+                      - payment_details
                     properties:
                       invoice_id:
                         type: string
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
-                        description: invoice id
-                        example: "INV21e834739230w138ey"
-                      # invoice_amount:
-                      #   type: number
-                      #   format: float
-                      #   description: Total amount of invoice
+                        example: INV08801fc870084f9fb6baa39d0f391eb8
+                      invoice_amount:
+                        type: number
+                        example: 10
                       payment_details:
                         type: object
+                        required:
+                          - invoice_net_paid_amount
+                          - invoice_net_adjustment_amount
+                          - invoice_payment_amount
                         properties:
-                          invoice_payment_amount:
-                            type: number
-                            format: float
-                            description: Total amount paid for an invoice
-                            example: 100
                           invoice_net_paid_amount:
                             type: number
-                            format: float
-                            description: net amount paid for an invoice
-                            example: 70
-                          # invoice_net_adjustment_amount:
-                          #   type: number
-                          #   format: float
-                          #   description: net adjustment amount paid for an invoice
-                          #   example: 30
+                            example: 1
+                          invoice_net_adjustment_amount:
+                            type: number
+                            example: 3
                           adjustment_details:
                             type: array
                             items:
@@ -104,45 +92,39 @@ paths:
                               properties:
                                 adjusment_type:
                                   type: string
-                                  enum: [ CREDIT NOTE AMOUNT, DEBIT NOTE AMOUNT, TDS DEDUCTION, ADVANCE ADJUSTMENT ]
+                                  example: CREDIT NOTE AMOUNT
                                 value:
                                   type: number
-                                  format: float
-                                  example: 30
+                                  example: 3
                                 ref_number:
                                   type: string
-                                  example: "ref_1234r8y473209138243"
+                                  example: CDN10af028994c9469c8b35b3f825a62f47
+                          invoice_payment_amount:
+                            type: number
+                            example: 4
+                          payment_id:
+                            type: string
+                            example: ppasdkpsxjdcnknchueinc
+                      supplier_bank_account_details:
+                        type: object
                         required:
-                          - invoice_payment_amount
-                    #                       supplier_bank_account_details:
-                    #                         type: object
-                    #                         properties:
-                    #                           masked_account_number:
-                    #                             type: string
-                    #                             pattern: "^[a-zA-Z0-9 _\\.]*$"
-                    #                             description: last 4 digits of account number
-                    #                           beneficiary_name:
-                    #                             type: string
-                    #                             pattern: "^[a-zA-Z0-9 _\\.]*$"
-                    #                             description: beneficiary name
-                    #                           ifsc:
-                    #                             type: string
-                    #                             pattern: "^[a-zA-Z0-9 _\\.]*$"
-                    #                             description: IFSC of Vendor's account
-                    #                           business_vpa:
-                    #                             type: string
-                    # #                            pattern: "^[a-zA-Z0-9 _\\.]*$"
-                    #                             description: bank acc vpa
-                    #                         required:
-                    #                           - masked_account_number
-                    #                           - beneficiary_name
-                    #                           - ifsc
-                    #                           - business_vpa
-                    # required:
-                    #   - invoice_id
-                    #   - invoice_amount
-                    #   - payment_details
-                    #   - supplier_bank_account_details
+                          - masked_account_number
+                          - ifsc
+                          - beneficiary_name
+                          - business_vpa
+                        properties:
+                          masked_account_number:
+                            type: string
+                            example: 5702
+                          ifsc:
+                            type: string
+                            example: SBIN0030422
+                          beneficiary_name:
+                            type: string
+                            example: VA Tech Ventures Private Limited
+                          business_vpa:
+                            type: string
+                            example: AAECSBIN57021
 
               required:
                 - buyer_b2b_id
@@ -273,11 +255,12 @@ paths:
       summary: Supplier Payment Confirmation
       description: Supplier Offplatform Payment Confirmation
       tags:
-        - Payment
+        - Tally Payment
       operationId: GetSupplierConfirmation
       parameters:
         - $ref: '#/components/parameters/requestId'
         - $ref: '#/components/parameters/appId'
+        - $ref: '#/components/parameters/appToken'
       requestBody:
         description: Data from V2
         required: true
@@ -298,12 +281,14 @@ paths:
                   type: string
                   pattern: "^[a-zA-Z0-9 _\\.]*$"
                   example: "accepted the payment"
-                # buyer_b2b_id:
-                #   type: string
-                #   pattern: "^[a-zA-Z0-9 _\\.]*$"
-                # supplier_b2b_id:
-                #   pattern: "^[a-zA-Z0-9 _\\.]*$"
-                #   type: string
+                buyer_b2b_id:
+                  type: string
+                  pattern: "^[a-zA-Z0-9 _\\.]*$"
+                  example: tatasteel_MH
+                supplier_b2b_id:
+                  pattern: "^[a-zA-Z0-9 _\\.]*$"
+                  type: string
+                  example: sparrow_karnataka
               required:
                 # - buyer_b2b_id
                 # - supplier_b2b_id
@@ -335,8 +320,14 @@ paths:
                   supplier_b2b_id:
                     type: string
                     pattern: "^[a-zA-Z0-9 _\\.]*$"
-                  response:
+                  status:
                     type: string
+                    enum: [SUCCESS, FAILURE]
+                  msg:
+                    type: string
+                  code:
+                    type: string
+
         400:
           description: unable to make req pay
           content:
