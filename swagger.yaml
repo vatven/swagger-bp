@@ -21,6 +21,103 @@ tags:
   - name: Credit Debit Note
 
 paths:
+  /b2b/v1/payments/{payment_id}/fetch:
+    get:
+      summary: Fetch Payment Status
+      description: Retrieves the status and details of a B2B payment using the payment ID.
+      operationId: FetchPayment
+      tags:
+        - Tally Payment
+      parameters:
+        - $ref: '#/components/parameters/requestId'
+        - $ref: '#/components/parameters/appId'
+        - $ref: '#/components/parameters/appToken'
+      responses:
+        '200':
+          description: Successful response with payment details
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                  status:
+                    type: string
+                    example: SUCCESS
+                  code:
+                    type: string
+                  payment_id:
+                    type: string
+                    example: PMT1b9ed44cac814a249aeacd30d22437d0
+                  payment_status:
+                    type: string
+                    example: success
+                  request_id:
+                    type: string
+                  buyer_b2b_id:
+                    type: string
+                    example: tatasteel_MH
+                  supplier_b2b_id:
+                    type: string
+                    example: sparrow_karnataka
+                  type:
+                    type: string
+                    example: OFFPLATFORM
+                  mode:
+                    type: string
+                    example: INTERNET BANKING
+                  utr:
+                    type: string
+                    example: uruwegfu43grefegu83r4gf3
+                  currency:
+                    type: string
+                    example: INR
+                  invoices_payments_details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        invoice_id:
+                          type: string
+                          example: INVac4ca4350de34bf6b81afeee82b013ca
+                        invoice_amount:
+                          type: number
+                          format: float
+                          example: 10
+                        payment_details:
+                          type: object
+                          properties:
+                            invoice_payment_amount:
+                              type: number
+                              format: float
+                              example: 3
+                            invoice_net_paid_amount:
+                              type: number
+                              format: float
+                              example: 3
+                            invoice_net_adjustment_amount:
+                              type: number
+                              format: float
+                              example: 0
+                        supplier_bank_account_details:
+                          type: object
+                          properties:
+                            masked_account_number:
+                              type: string
+                            ifsc:
+                              type: string
+                            beneficiary_name:
+                              type: string
+                            business_vpa:
+                              type: string
+                        current_status:
+                          type: string
+                          example: ACCEPTED
+                        new_status:
+                          type: string
+                          example: PAYMENT INITIATED
+
   /b2b/v1/payments/initiate:
     post:
       summary: Request Payment
