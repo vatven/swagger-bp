@@ -768,6 +768,29 @@ paths:
                 - item_lists
                 - value_details
               properties:
+                eway_bill_detail:
+                  type: object
+                  required:
+                    - distance
+                  properties:
+                    transporter_id:
+                      type: string
+                    transporter_name:
+                      type: string
+                    transport_mode:
+                      type: string
+                      enum: [ ROAD, RAIL, AIR, SHIP ]
+                    distance:
+                      type: integer
+                    transport_document_no:
+                      type: string
+                    transport_document_date:
+                      type: string
+                    vehicle_no:
+                      type: string
+                    vehicle_type:
+                      type: string
+                      enum: [ REGULAR, OVER-DIMENSIONAL CARGO ]
                 einvoice:
                   type: object
                   required:
@@ -1118,6 +1141,29 @@ paths:
                 invoice_id:
                   type: string
                   example: INVffb4497e20644c3db1c7e281709d6347
+                eway_bill_detail:
+                  type: object
+                  required:
+                    - distance
+                  properties:
+                    transporter_id:
+                      type: string
+                    transporter_name:
+                      type: string
+                    transport_mode:
+                      type: string
+                      enum: [ ROAD, RAIL, AIR, SHIP ]
+                    distance:
+                      type: integer
+                    transport_document_no:
+                      type: string
+                    transport_document_date:
+                      type: string
+                    vehicle_no:
+                      type: string
+                    vehicle_type:
+                      type: string
+                      enum: [ REGULAR, OVER-DIMENSIONAL CARGO ]
                 einvoice:
                   type: object
                   required:
