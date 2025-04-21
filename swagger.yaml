@@ -1094,6 +1094,356 @@ paths:
                     type: string
                     example: "Internal server error"
 
+  /b2b/v1/invoice/edit:
+    post:
+      summary: Edit an invoice
+      description: Edits a B2B invoice
+      operationId: EditInvoice
+      tags:
+        - Tally Invoice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - supplier_invoice_number
+                - supplier_details
+                - buyer_details
+                - item_lists
+                - value_details
+                - invoice_id
+              properties:
+                invoice_id:
+                  type: string
+                  example: INVffb4497e20644c3db1c7e281709d6347
+                einvoice:
+                  type: object
+                  required:
+                    - irn
+                  properties:
+                    irn:
+                      type: string
+                      example: dummyirnnumberforinvoice
+                transaction_details:
+                  type: object
+                  required:
+                    - tax_scheme
+                    - supply_type
+                    - igst_chargable
+                  properties:
+                    tax_scheme:
+                      type: string
+                      enum: [ GST ]
+                    supply_type:
+                      type: string
+                      enum: [ B2B, SEZWP, SEZWOP, EXPWP, DEXP, B2C ]
+                    igst_chargable:
+                      type: string
+                #                      enum: [ YES, NO ]
+                supplier_invoice_number:
+                  type: string
+                  example: cb639cbc-2d84-4054-bb94-f90e1c7ef1ff
+                supplier_details:
+                  type: object
+                  required:
+                    - b2b_id
+                    - legal_name
+                  properties:
+                    b2b_id:
+                      type: string
+                      example: vatech_karnataka
+                    state_code:
+                      type: string
+                    address:
+                      type: object
+                      required:
+                        - address_line1
+                        - city
+                        - state
+                        - country
+                        - pincode
+                      properties:
+                        address_line1:
+                          type: string
+                          example: ""
+                        city:
+                          type: string
+                          example: ""
+                        state:
+                          type: string
+                          enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
+                        country:
+                          type: string
+                          example: "INDIA"
+                        pincode:
+                          type: string
+                          example: "560066"
+                    legal_name:
+                      type: string
+                      example: VA Tech Ventures Private Limited
+                buyer_details:
+                  type: object
+                  required:
+                    - b2b_id
+                    - trade_name
+                    - legal_name
+                  properties:
+                    b2b_id:
+                      type: string
+                      example: time_education_haryana_4
+                    state_code:
+                      type: string
+                      example: 29
+                    place_of_supply:
+                      type: string
+                      example: 29
+                    trade_name:
+                      type: string
+                      example: time education
+                    legal_name:
+                      type: string
+                      example: time education
+                    address:
+                      type: object
+                      required:
+                        - address_line1
+                        - city
+                        - state
+                        - country
+                        - pincode
+                      properties:
+                        address_line1:
+                          type: string
+                          example: ""
+                        city:
+                          type: string
+                          example: ""
+                        state:
+                          type: string
+                          enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
+                        country:
+                          type: string
+                          example: "INDIA"
+                        pincode:
+                          type: string
+                          example: "560066"
+                item_lists:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - serial_no
+                      - is_service
+                      - hsn_code
+                      - quantity
+                      - unit_price
+                      - total_amount
+                      - assessment_amount
+                      - total_item_value
+                    properties:
+                      serial_no:
+                        type: string
+                        example: "1"
+                      product_description:
+                        type: string
+                        example: TnE Service
+                      is_service:
+                        type: string
+                        example: YES
+                      hsn_code:
+                        type: string
+                        example: "997331"
+                      quantity:
+                        type: number
+                        example: 1
+                      unit:
+                        type: string
+                        example: UNT
+                      unit_price:
+                        type: number
+                        example: 1.0
+                      total_amount:
+                        type: number
+                        example: 10
+                      assessment_amount:
+                        type: number
+                        example: 10
+                      gst_rate:
+                        type: number
+                        example: 0.0
+                      total_item_value:
+                        type: number
+                        example: 10
+                value_details:
+                  type: object
+                  properties:
+                    assessment_value:
+                      type: number
+                      example: 10
+                    total_invoice_value:
+                      type: number
+                      example: 10
+                dispatch_details:
+                  $ref: '#/components/schemas/PartnerDispatchDetails'
+                shipping_details:
+                  $ref: '#/components/schemas/PartnerDispatchDetails'
+                advance_payment_details:
+                  $ref: '#/components/schemas/PartnerAdvancePaymentDetails'
+                invoice_reference_details:
+                  $ref: '#/components/schemas/PartnerInvoiceReferenceDetails'
+                preceding_invoice_details:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PartnerPrecedingInvoiceDetails'
+                po_details:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      po_id:
+                        type: string
+                      buyer_po_id:
+                        type: string
+                      po_date:
+                        type: string
+                contract_reference_details:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PartnerContractReferenceDetails'
+                export_details:
+                  $ref: '#/components/schemas/PartnerExportDetails'
+                recurring_payments:
+                  $ref: '#/components/schemas/PartnerRecurringPayments'
+                payment_milestones:
+                  type: array
+                  items:
+                    $ref: '#/components/schemas/PaymentMilestone'
+                shipping_terms_details:
+                  $ref: '#/components/schemas/PartnerShippingTermsDetails'
+      parameters:
+        - $ref: '#/components/parameters/requestId'
+        - $ref: '#/components/parameters/appId'
+        - $ref: '#/components/parameters/appToken'
+      responses:
+        '200':
+          description: Invoice created successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  status:
+                    type: string
+                    example: SUCCESS
+                  msg:
+                    type: string
+                    example: ""
+                  code:
+                    type: string
+                    example: ""
+                  invoice_status:
+                    type: string
+                    example: ""
+                  supplier_invoice_number:
+                    type: string
+                    example: cb639cbc-2d84-4054-bb94-f90e1c7ef1ff
+                  supplier_details:
+                    type: object
+                    properties:
+                      b2b_id:
+                        type: string
+                      legal_name:
+                        type: string
+                      address:
+                        type: object
+                      contact_number:
+                        type: object
+                  buyer_details:
+                    type: object
+                    properties:
+                      b2b_id:
+                        type: string
+                      legal_name:
+                        type: string
+                      trade_name:
+                        type: string
+                      address:
+                        type: object
+                      contact_number:
+                        type: object
+                  item_lists:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        serial_no:
+                          type: string
+                        product_description:
+                          type: string
+                        is_service:
+                          type: string
+                        hsn_code:
+                          type: string
+                        quantity:
+                          type: number
+                        unit:
+                          type: string
+                        unit_price:
+                          type: number
+                        total_amount:
+                          type: number
+                        assessment_amount:
+                          type: number
+                        total_item_value:
+                          type: number
+                  value_details:
+                    type: object
+                    properties:
+                      assessment_value:
+                        type: number
+                      total_invoice_value:
+                        type: number
+                  current_status:
+                    type: string
+                    example: CREATED
+                  new_status:
+                    type: string
+                    example: SENT TO BUYER
+                  invoice_id:
+                    type: string
+                    example: INV259aa10badd943d2bda12be26bb5fd5b
+        400:
+          description: unable to make req pay
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                    example: "3ab43aa0-7187-44b1-8371-5fa448841da3"
+                    description: request id
+                  message:
+                    type: string
+                    example: "webhook not received from central unit"
+                    description: error message
+                  code:
+                    type: string
+                    example: "B2B010"
+                    description: error code
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Internal server error"
+
   /b2b/v2/invoice/buyer/status/change:
     post:
       summary: Change Buyer Status of an Invoice
