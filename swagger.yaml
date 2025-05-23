@@ -139,6 +139,9 @@ paths:
                 buyer_b2b_id:
                   type: string
                   example: tatasteel_MH
+                payment_date_ts:
+                  type: string
+                  example: "2025-03-05T00:00:00Z"
                 supplier_b2b_id:
                   type: string
                   example: sparrow_karnataka
@@ -865,6 +868,9 @@ paths:
                 - item_lists
                 - value_details
               properties:
+                invoice_creation_ts:
+                  type: string
+                  example: "2025-03-05T00:00:00Z"
                 eway_bill_detail:
                   type: object
                   required:
@@ -2070,7 +2076,7 @@ paths:
                 #   pattern: "^[a-zA-Z0-9 _\\.]*$"
                 default_b2b_id:
                   type: string
-                  pattern: "^[a-zA-Z0-9 _\\.]*$"
+                  pattern: "^[a-zA-Z0-9 _\\.\\@]*$"
                   example: "default_ABC"
                 # mcc_code:
                 #   type: string
@@ -4508,7 +4514,7 @@ paths:
                   enum: [ GSTIN, UDYAM, SHOP ESTABLISHMENT CERTIFICATE, PAN, TAN, IEC, LEI, FACTORY LICENSE NUMBER, DRUG LICENSE NUMBER, TOURISM LICENSE NUMBER, FDA, FSSAI, HEALTH AND TRADE LICENSE NUMBER, LABOR LICENSE NUMBER, BROADCASTING AND TELECOM LICENSE NUMBER, B2BID, CONTACT NUMBER, EMAIL, NAME]
                 value:
                   type: string
-                  pattern: "^[a-zA-Z0-9 _\\.]*$"
+                  pattern: "^[a-zA-Z0-9 _\\.\\@]*$"
               required:
                 - requestor_b2b_id
                 - search_parameter
@@ -4594,7 +4600,7 @@ paths:
                         description: The name of the search parameter.
                       value:
                         type: string
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+                        pattern: "^[a-zA-Z0-9 _\\.\\@\\-]*$"
                         example: "06AAKCA6445Q1Z2"
                         description: The value of the search parameter.
                     required:
