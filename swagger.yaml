@@ -50,9 +50,11 @@ paths:
                   payment_id:
                     type: string
                     example: PMT1b9ed44cac814a249aeacd30d22437d0
+                    pattern: "^[a-zA-Z0-9 _\\.\\@\\-]*$"
                   payment_status:
                     type: string
-                    example: success
+                    pattern: "^[a-zA-Z0-9 _\\.\\@\\-]*$"
+                    enum: [ SUCCESS, FAILURE ]
                   request_id:
                     type: string
                   buyer_b2b_id:
@@ -64,9 +66,11 @@ paths:
                   type:
                     type: string
                     example: OFFPLATFORM
+                    enum: [ OFFPLATFORM, ONPLATFORM ]
                   mode:
                     type: string
                     example: INTERNET BANKING
+                    enum: [INTERNET BANKING, DEBIT CARD, CREDIT CARD, IMPS, CASH, UPI, WALLET, NEFT, PREPAID CARD, ACCOUNT TRANSFER, CHEQUE]
                   utr:
                     type: string
                     example: uruwegfu43grefegu83r4gf3
@@ -114,9 +118,11 @@ paths:
                         current_status:
                           type: string
                           example: ACCEPTED
+                          enum: [PARTIALLY PAID, ACCEPTED, ABANDONED]
                         new_status:
                           type: string
                           example: PAYMENT INITIATED
+                          enum: [PAYMENT INITIATED, PARTIALLY PAID AND PAYMENT INITIATED, PARTIALLY PAID, FULLY PAID]
 
   /b2b/v1/payments/initiate:
     post:
@@ -148,9 +154,11 @@ paths:
                 mode:
                   type: string
                   example: INTERNET BANKING
+                  enum: [INTERNET BANKING, DEBIT CARD, CREDIT CARD, IMPS, CASH, UPI, WALLET, NEFT, PREPAID CARD, ACCOUNT TRANSFER, CHEQUE]
                 type:
                   type: string
                   example: OFFPLATFORM
+                  enum: [OFFPLATFORM, ONPLATFORM]
                 currency:
                   type: string
                   example: INR
@@ -193,6 +201,7 @@ paths:
                                 adjusment_type:
                                   type: string
                                   example: CREDIT NOTE AMOUNT
+                                  enum: [CREDIT NOTE AMOUNT, DEBIT NOTE AMOUNT, TDS DEDUCTION, ADVANCE ADJUSTMENT]
                                 value:
                                   type: number
                                   example: 3
@@ -2416,7 +2425,7 @@ paths:
                       identifier_value:
                         type: string
                         example: "19DRBPO2364L1TU"
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+                        pattern: "^[a-zA-Z0-9 _\\.\\@\\-]*$"
                     required:
                       - is_primary
                       - identifier_type
@@ -2750,7 +2759,7 @@ paths:
                       identifier_value:
                         type: string
                         example: "19DRBPO2364L1TU"
-                        pattern: "^[a-zA-Z0-9 _\\.]*$"
+                        pattern: "^[a-zA-Z0-9 _\\.\\@\\-]*$"
                     required:
                       - is_primary
                       - identifier_type
