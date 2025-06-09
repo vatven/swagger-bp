@@ -10403,10 +10403,10 @@ components:
     PartnerExportDetails:
       type: object
       required:
-        - shipBillNo
-        - shipBillDate
-        - countryCode
-        - exportDuty
+        - ship_bill_no
+        - ship_bill_date
+        - country_code
+        - export_duty
       properties:
         ship_bill_no:
           type: string
