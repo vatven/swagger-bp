@@ -96,6 +96,24 @@ paths:
                     type: string
                     example: INR
                     enum: [ INR ]
+                  additional_infos:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - name
+                        - value
+                      properties:
+                        name:
+                          type: string
+                          minLength: 1
+                          maxLength: 256
+                          pattern: ^([^\"]){1,256}$
+                        value:
+                          type: string
+                          minLength: 1
+                          maxLength: 256
+                          pattern: ^([^\"]){1,256}$
                   invoices_payments_details:
                     type: array
                     items:
@@ -219,6 +237,24 @@ paths:
                   minLength: 1
                   maxLength: 50
                   pattern: ^([^\"]){1,50}$
+                additional_infos:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - name
+                      - value
+                    properties:
+                      name:
+                        type: string
+                        minLength: 1
+                        maxLength: 256
+                        pattern: ^([^\"]){1,256}$
+                      value:
+                        type: string
+                        minLength: 1
+                        maxLength: 256
+                        pattern: ^([^\"]){1,256}$
                 invoices_payments_details:
                   type: array
                   items:
