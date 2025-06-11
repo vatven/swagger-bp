@@ -96,6 +96,24 @@ paths:
                     type: string
                     example: INR
                     enum: [ INR ]
+                  additional_infos:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - name
+                        - value
+                      properties:
+                        name:
+                          type: string
+                          minLength: 1
+                          maxLength: 256
+                          pattern: ^([^\"]){1,256}$
+                        value:
+                          type: string
+                          minLength: 1
+                          maxLength: 256
+                          pattern: ^([^\"]){1,256}$
                   invoices_payments_details:
                     type: array
                     items:
@@ -219,6 +237,24 @@ paths:
                   minLength: 1
                   maxLength: 50
                   pattern: ^([^\"]){1,50}$
+                additional_infos:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - name
+                      - value
+                    properties:
+                      name:
+                        type: string
+                        minLength: 1
+                        maxLength: 256
+                        pattern: ^([^\"]){1,256}$
+                      value:
+                        type: string
+                        minLength: 1
+                        maxLength: 256
+                        pattern: ^([^\"]){1,256}$
                 invoices_payments_details:
                   type: array
                   items:
@@ -1038,6 +1074,24 @@ paths:
                     example: "Invoice accepted"
                     minLength: 1
                     maxLength: 256
+                  additional_infos:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - name
+                        - value
+                      properties:
+                        name:
+                          type: string
+                          minLength: 1
+                          maxLength: 256
+                          pattern: ^([^\"]){1,256}$
+                        value:
+                          type: string
+                          minLength: 1
+                          maxLength: 256
+                          pattern: ^([^\"]){1,256}$
         400:
           description: unable to make req pay
           content:
@@ -1794,6 +1848,26 @@ paths:
                     minLength: 35
                     maxLength: 35
                     pattern: ^[INV]{3}[A-Za-z0-9]{32,32}$
+                  additional_infos:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - name
+                        - value
+                      properties:
+                        name:
+                          type: string
+                          minLength: 1
+                          maxLength: 256
+                          pattern: ^([^\"]){1,256}$
+                        value:
+                          type: string
+                          minLength: 1
+                          maxLength: 256
+                          pattern: ^([^\"]){1,256}$
+
+
         400:
           description: unable to make req pay
           content:
@@ -9871,6 +9945,24 @@ components:
             $ref: '#/components/schemas/PaymentMilestone'
         shipping_terms_details:
           $ref: '#/components/schemas/PartnerShippingTermsDetails'
+        additional_infos:
+          type: array
+          items:
+            type: object
+            required:
+              - name
+              - value
+            properties:
+              name:
+                type: string
+                minLength: 1
+                maxLength: 256
+                pattern: ^([^\"]){1,256}$
+              value:
+                type: string
+                minLength: 1
+                maxLength: 256
+                pattern: ^([^\"]){1,256}$
 
     EInvoice:
       type: object
@@ -10343,6 +10435,24 @@ components:
             $ref: '#/components/schemas/PaymentMilestone'
         shipping_terms_details:
           $ref: '#/components/schemas/PartnerShippingTermsDetails'
+        additional_infos:
+          type: array
+          items:
+            type: object
+            required:
+              - name
+              - value
+            properties:
+              name:
+                type: string
+                minLength: 1
+                maxLength: 256
+                pattern: ^([^\"]){1,256}$
+              value:
+                type: string
+                minLength: 1
+                maxLength: 256
+                pattern: ^([^\"]){1,256}$
 
     PartnerPrecedingInvoiceDetails:
       type: object
@@ -10403,10 +10513,10 @@ components:
     PartnerExportDetails:
       type: object
       required:
-        - shipBillNo
-        - shipBillDate
-        - countryCode
-        - exportDuty
+        - ship_bill_no
+        - ship_bill_date
+        - country_code
+        - export_duty
       properties:
         ship_bill_no:
           type: string
@@ -10596,6 +10706,24 @@ components:
           items:
             type: string
             example: "PMT2iw7etyd67r5r437twd7e65tfr56e4edg"
+        additional_infos:
+          type: array
+          items:
+            type: object
+            required:
+              - name
+              - value
+            properties:
+              name:
+                type: string
+                minLength: 1
+                maxLength: 256
+                pattern: ^([^\"]){1,256}$
+              value:
+                type: string
+                minLength: 1
+                maxLength: 256
+                pattern: ^([^\"]){1,256}$
 
     ValueDetail:
       type: object
