@@ -21,6 +21,110 @@ tags:
   - name: Credit Debit Note
 
 paths:
+  /b2b/v1/payments/update/additional_info:
+    post:
+      summary: Update Payment's Additional Info
+      description: Update Payment's Additional Info
+      operationId: UpdatePaymentAdditionalInfo
+      tags:
+        - Tally Payment
+      parameters:
+        - $ref: '#/components/parameters/requestId'
+        - $ref: '#/components/parameters/appId'
+        - $ref: '#/components/parameters/appToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                payment_id:
+                  type: string
+                  example: PMTcec5619100ea407aa0662ee944fffa1d
+                  minLength: 35
+                  maxLength: 35
+                  pattern: ^[P]{1}[M]{1}[T]{1}[A-Za-z0-9]{32,32}$
+                additional_infos:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - name
+                      - value
+                    properties:
+                      name:
+                        type: string
+                        minLength: 1
+                        maxLength: 256
+                        pattern: ^([^\"]){1,256}$
+                      value:
+                        type: string
+                        minLength: 1
+                        maxLength: 256
+                        pattern: ^([^\"]){1,256}$
+              required:
+                - payment_id
+                - additional_infos
+      responses:
+        200:
+          description: Payment Info
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  payment_id:
+                    type: string
+                    minLength: 35
+                    maxLength: 35
+                    pattern: ^[P]{1}[I]{1}[V]{1}[A-Za-z0-9]{32}|[I]{1}[N]{1}[V]{1}[A-Za-z0-9]{32,32}$
+                  status:
+                    type: string
+                    enum: [ SUCCESS, FAILURE ]
+                  code:
+                    type: string
+                  msg:
+                    type: string
+                  additional_infos:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - name
+                        - value
+                      properties:
+                        name:
+                          type: string
+                          minLength: 1
+                          maxLength: 256
+                          pattern: ^([^\"]){1,256}$
+                        value:
+                          type: string
+                          minLength: 1
+                          maxLength: 256
+                          pattern: ^([^\"]){1,256}$
+
+        400:
+          description: unable to make req pay
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                    example: "3ab43aa0-7187-44b1-8371-5fa448841da3"
+                    description: request id
+                  message:
+                    type: string
+                    example: "webhook not received from central unit"
+                    description: error message
+                  code:
+                    type: string
+                    example: "B2B010"
+                    description: error code
+
   /b2b/v1/payments/{payment_id}/fetch:
     get:
       summary: Fetch Payment Status
@@ -625,6 +729,110 @@ paths:
                     type: string
                   code:
                     type: string
+
+        400:
+          description: unable to make req pay
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                    example: "3ab43aa0-7187-44b1-8371-5fa448841da3"
+                    description: request id
+                  message:
+                    type: string
+                    example: "webhook not received from central unit"
+                    description: error message
+                  code:
+                    type: string
+                    example: "B2B010"
+                    description: error code
+
+  /b2b/v1/invoice/update/additional_info:
+    post:
+      summary: Update Invoice's Additional Info
+      description: Update Invoice's Additional Info
+      operationId: UpdateInvoiceAdditionalInfo
+      tags:
+        - Tally Invoice
+      parameters:
+        - $ref: '#/components/parameters/requestId'
+        - $ref: '#/components/parameters/appId'
+        - $ref: '#/components/parameters/appToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                invoice_id:
+                  type: string
+                  example: INVcec5619100ea407aa0662ee944fffa1d
+                  minLength: 35
+                  maxLength: 35
+                  pattern: ^[I]{1}[V]{1}[V]{1}[A-Za-z0-9]{32,32}$
+                additional_infos:
+                  type: array
+                  items:
+                    type: object
+                    required:
+                      - name
+                      - value
+                    properties:
+                      name:
+                        type: string
+                        minLength: 1
+                        maxLength: 256
+                        pattern: ^([^\"]){1,256}$
+                      value:
+                        type: string
+                        minLength: 1
+                        maxLength: 256
+                        pattern: ^([^\"]){1,256}$
+              required:
+                - payment_id
+                - additional_infos
+      responses:
+        200:
+          description: Payment Info
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  payment_id:
+                    type: string
+                    minLength: 35
+                    maxLength: 35
+                    pattern: ^[P]{1}[I]{1}[V]{1}[A-Za-z0-9]{32}|[I]{1}[N]{1}[V]{1}[A-Za-z0-9]{32,32}$
+                  status:
+                    type: string
+                    enum: [ SUCCESS, FAILURE ]
+                  msg:
+                    type: string
+                  code:
+                    type: string
+                  additional_infos:
+                    type: array
+                    items:
+                      type: object
+                      required:
+                        - name
+                        - value
+                      properties:
+                        name:
+                          type: string
+                          minLength: 1
+                          maxLength: 256
+                          pattern: ^([^\"]){1,256}$
+                        value:
+                          type: string
+                          minLength: 1
+                          maxLength: 256
+                          pattern: ^([^\"]){1,256}$
 
         400:
           description: unable to make req pay
