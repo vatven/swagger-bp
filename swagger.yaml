@@ -920,6 +920,7 @@ paths:
                         enum: [ GST ]
                       supply_type:
                         type: string
+                        enum: [ B2B, SEZWP, SEZWOP, EXPWP, DEXP, B2C ]
                       reverse_charge_tax:
                         type: string
                         enum: [ YES, NO ]
@@ -1664,6 +1665,7 @@ paths:
                         enum: [ GST ]
                       supply_type:
                         type: string
+                        enum: [ B2B, SEZWP, SEZWOP, EXPWP, DEXP, B2C ]
                       reverse_charge_tax:
                         type: string
                         enum: [ YES, NO ]
@@ -2194,6 +2196,7 @@ paths:
                       enum: [ GST ]
                     supply_type:
                       type: string
+                      enum: [ B2B, SEZWP, SEZWOP, EXPWP, DEXP, B2C ]
                     reverse_charge_tax:
                       type: string
                       enum: [ YES, NO ]
@@ -2659,6 +2662,7 @@ paths:
                         enum: [ GST ]
                       supply_type:
                         type: string
+                        enum: [ B2B, SEZWP, SEZWOP, EXPWP, DEXP, B2C ]
                       reverse_charge_tax:
                         type: string
                         enum: [ YES, NO ]
@@ -9773,6 +9777,7 @@ components:
               enum: [ GST ]
             supply_type:
               type: string
+              enum: [ B2B, SEZWP, SEZWOP, EXPWP, DEXP, B2C ]
             reverse_charge_tax:
               type: string
               enum: [ YES, NO ]
@@ -9843,6 +9848,16 @@ components:
               minLength: 1
               maxLength: 256
               pattern: ^([^\"]){1,256}$
+            trade_name:
+              type: string
+              example: vatech
+              minLength: 1
+              maxLength: 256
+              pattern: ^([^\"]){1,256}$
+            email:
+              type: string
+              minLength: 4
+              maxLength: 256
             contact_number:
               type: object
               required:
@@ -9852,7 +9867,7 @@ components:
               properties:
                 type:
                   type: string
-                  enum: [ MOBILE, EMAIL ]
+                  enum: [ MOBILE ]
                 country_code:
                   type: string
                   example: "+91"
@@ -9931,6 +9946,10 @@ components:
                   example: "560066"
                   minLength: 6
                   maxLength: 6
+            email:
+              type: string
+              minLength: 4
+              maxLength: 256
             contact_number:
               type: object
               required:
@@ -9940,7 +9959,7 @@ components:
               properties:
                 type:
                   type: string
-                  enum: [ MOBILE, EMAIL ]
+                  enum: [ MOBILE ]
                 country_code:
                   type: string
                   example: "+91"
@@ -10081,9 +10100,13 @@ components:
             assessment_value:
               type: number
               example: 10
+              minimum: 0
+              maximum: 999999999999.999
             total_invoice_value:
               type: number
               example: 10
+              minimum: 0
+              maximum: 999999999999.999
             other_values:
               type: array
               items:
@@ -10244,6 +10267,7 @@ components:
               enum: [ GST ]
             supply_type:
               type: string
+              enum: [ B2B, SEZWP, SEZWOP, EXPWP, DEXP, B2C ]
             reverse_charge_tax:
               type: string
               enum: [ YES, NO ]
@@ -10322,6 +10346,16 @@ components:
               minLength: 1
               maxLength: 256
               pattern: ^([^\"]){1,256}$
+            trade_name:
+              type: string
+              example: vatech
+              minLength: 1
+              maxLength: 256
+              pattern: ^([^\"]){1,256}$
+            email:
+              type: string
+              minLength: 4
+              maxLength: 256
             contact_number:
               type: object
               required:
@@ -10419,6 +10453,10 @@ components:
                   example: "560066"
                   minLength: 6
                   maxLength: 6
+            email:
+              type: string
+              minLength: 4
+              maxLength: 256
             contact_number:
               type: object
               required:
@@ -10428,7 +10466,7 @@ components:
               properties:
                 type:
                   type: string
-                  enum: [ MOBILE, EMAIL ]
+                  enum: [ MOBILE ]
                 country_code:
                   type: string
                   example: "+91"
@@ -10480,6 +10518,10 @@ components:
               quantity:
                 type: number
                 example: 1
+                minimum: 0
+                maximum: 9999999999.999
+              free_quantity:
+                type: number
                 minimum: 0
                 maximum: 9999999999.999
               unit:
