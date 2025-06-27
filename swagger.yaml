@@ -1486,7 +1486,6 @@ paths:
               type: object
               required:
                 - business_id
-                - ledger_view
                 - b2b_ids
                 - invoice_status
                 - from_date
@@ -1562,6 +1561,102 @@ paths:
                     type: string
                     example: "Internal server error"
 
+
+  /b2b/v1/invoice/details/search/b2bIds:
+    post:
+      summary: Fetch Invoice Details by Status and supplier and buyer b2b ids
+      description: Retrieves a list of invoices filtered by status, business ID, date range, supplier and buyer b2b ids
+      operationId: SearchInvoiceStatusDetails
+      tags:
+        - Tally Invoice
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - business_id
+                - supplier_b2b_ids
+                - buyer_b2b_ids
+                - invoice_status
+                - from_date
+                - to_date
+              properties:
+                business_id:
+                  type: string
+                  example: ORGeb7678721cc849e098e823096494efac
+                  minLength: 35
+                  maxLength: 35
+                supplier_b2b_ids:
+                  type: array
+                  items:
+                    type: string
+                  example: [ "vatech_karnataka" ]
+                  minLength: 1
+                  maxLength: 100
+                buyer_b2b_ids:
+                  type: array
+                  items:
+                    type: string
+                  example: [ "vatech_karnataka" ]
+                  minLength: 1
+                  maxLength: 100
+                invoice_status:
+                  type: array
+                  items:
+                    type: string
+                    example: SENT TO BUYER
+                    enum: [ CREATED, SENT TO BUYER, ACCEPTED, REJECTED, UNDER REVIEW, CANCELLED, PARTIALLY PAID, FULLY PAID, CLOSED, ABANDONED, PAYMENT INITIATED, PARTIALLY PAID AND PAYMENT INITIATED ]
+                from_date:
+                  type: string
+                  format: date-time
+                  example: 2025-03-05T00:00:00Z
+                to_date:
+                  type: string
+                  format: date-time
+                  example: 2025-03-12T01:52:25Z
+      parameters:
+        - $ref: '#/components/parameters/requestId'
+        - $ref: '#/components/parameters/appId'
+        - $ref: '#/components/parameters/appToken'
+      responses:
+        '200':
+          description: Successfully fetched invoice data filtered by status.
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/SearchInvoicesResponse'
+
+        400:
+          description: unable to make req pay
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                    example: "3ab43aa0-7187-44b1-8371-5fa448841da3"
+                    description: request id
+                  message:
+                    type: string
+                    example: "webhook not received from central unit"
+                    description: error message
+                  code:
+                    type: string
+                    example: "B2B010"
+                    description: error code
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Internal server error"
 
   /b2b/v1/invoice/create:
     post:
@@ -10882,6 +10977,58 @@ components:
           format: float64
           minimum: 0
           maximum: 9999999999.99
+
+    SearchInvoicesResponse:
+      type: object
+      properties:
+        msg:
+          type: string
+          example: ""
+        status:
+          type: string
+          example: SUCCESS
+        code:
+          type: string
+          example: ""
+        business_id:
+          type: string
+          example: ORGeb7678721cc849e098e823096494efac
+        supplier_b2b_ids:
+          type: array
+          items:
+            type: string
+            enum: [ CREATED, SENT TO BUYER, ACCEPTED, REJECTED, UNDER REVIEW, CANCELLED, PARTIALLY PAID, FULLY PAID, CLOSED, ABANDONED, PAYMENT INITIATED, PARTIALLY PAID AND PAYMENT INITIATED ]
+          example: [ "vatech_karnataka" ]
+        buyer_b2b_ids:
+          type: array
+          items:
+            type: string
+          example: [ "vatech_karnataka" ]
+        from_date:
+          type: string
+          format: date-time
+          example: 2025-03-05T00:00:00Z
+        to_date:
+          type: string
+          format: date-time
+          example: 2025-03-12T01:52:25Z
+        invoice_count:
+          type: integer
+          example: 11
+        total_amount:
+          type: number
+          format: float
+          example: 9031
+        invoice_statuses:
+          type: array
+          items:
+            type: string
+            example: SENT TO BUYER
+        invoice_status_details:
+          type: array
+          items:
+            $ref: '#/components/schemas/InvoiceSearchDetails'
+
     FetchInvoicesStatusResponse:
       type: object
       properties:
@@ -10924,6 +11071,60 @@ components:
           type: array
           items:
             $ref: '#/components/schemas/InvoiceStatusDetailV2'
+
+    InvoiceSearchDetails:
+      type: object
+      properties:
+        invoice_status:
+          type: string
+          example: SENT TO BUYER
+          enum: [ CREATED, SENT TO BUYER, ACCEPTED, REJECTED, UNDER REVIEW, CANCELLED, PARTIALLY PAID, FULLY PAID, CLOSED, ABANDONED, PAYMENT INITIATED, PARTIALLY PAID AND PAYMENT INITIATED ]
+        invoice_date:
+          type: string
+          format: date-time
+          example: 2025-03-05T13:56:14+05:30
+        invoice_id:
+          type: string
+          example: INV1c159180b67a4a13b4bb5070399cfae4
+        supplier_invoice_number:
+          type: string
+          example: 4564abe6-eaaa-4982-9127-543c8c21a8f0
+        supplier_details:
+          $ref: '#/components/schemas/SupplierDetail'
+        buyer_details:
+          $ref: '#/components/schemas/BuyerDetail'
+        value_details:
+          $ref: '#/components/schemas/ValueDetail'
+        invoice_due_amount:
+          type: number
+          format: float
+          example: 10
+        invoice_remarks:
+          type: string
+          example: "Invoice accepted"
+        payment_ids:
+          type: array
+          items:
+            type: string
+            example: "PMT2iw7etyd67r5r437twd7e65tfr56e4edg"
+        additional_infos:
+          type: array
+          items:
+            type: object
+            required:
+              - name
+              - value
+            properties:
+              name:
+                type: string
+                minLength: 1
+                maxLength: 256
+                pattern: ^([^\"]){1,256}$
+              value:
+                type: string
+                minLength: 1
+                maxLength: 256
+                pattern: ^([^\"]){1,256}$
 
     InvoiceStatusDetailV2:
       type: object
