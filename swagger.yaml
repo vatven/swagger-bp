@@ -854,6 +854,507 @@ paths:
                     example: "B2B010"
                     description: error code
 
+  /b2b/v1/invoice/bulk/fetch:
+    post:
+      summary: Fetch Bulk Invoice Details
+      description: Retrieves the full details of multiple B2B invoice using its unique invoice ID.
+      operationId: FetchBulkInvoiceDetails
+      tags:
+        - Tally Invoice
+      parameters:
+        - $ref: '#/components/parameters/requestId'
+        - $ref: '#/components/parameters/appId'
+        - $ref: '#/components/parameters/appToken'
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required:
+                - business_id
+                - invoice_ids
+              properties:
+                business_id:
+                  type: string
+                  example: ORGeb7678721cc849e098e823096494efac
+                  minLength: 35
+                  maxLength: 35
+                  pattern: ^[ORG]{3}[A-Za-z0-9]{32,32}$
+                invoice_ids:
+                  type: array
+                  items:
+                    type: string
+                    example: INV899e89eabaf94a0e8ebccd3d849efbef
+                    minLength: 35
+                    maxLength: 35
+                    pattern: ^[INV]{3}[A-Za-z0-9]{32,32}$
+      responses:
+        '200':
+          description: Successful response with invoice details.
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  invoice_details:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        invoice_status:
+                          type: string
+                          example: SENT TO BUYER
+                          enum: [ CREATED, SENT TO BUYER, ACCEPTED, REJECTED, UNDER REVIEW, CANCELLED, PARTIALLY PAID, FULLY PAID, CLOSED, ABANDONED, PAYMENT INITIATED, PARTIALLY PAID AND PAYMENT INITIATED ]
+                        supplier_invoice_number:
+                          type: string
+                          example: e13a6955-072f-454f-bf9c-8dfb969dee2b
+                          minLength: 1
+                          maxLength: 50
+                        einvoice:
+                          type: object
+                          properties:
+                            irn:
+                              type: string
+                              example: irnewdhbcebrfihcopwdcbyerubgvyerbcjbdsjb
+                              minLength: 64
+                              maxLength: 64
+                        transaction_details:
+                          type: object
+                          required:
+                            - tax_scheme
+                            - supply_type
+                          properties:
+                            is_item_amt_tax_inclusive:
+                              type: string
+                              enum: [ YES, NO ]
+                            tax_scheme:
+                              type: string
+                              enum: [ GST ]
+                            supply_type:
+                              type: string
+                              enum: [ B2B, SEZWP, SEZWOP, EXPWP, DEXP, B2C ]
+                            reverse_charge_tax:
+                              type: string
+                              enum: [ YES, NO ]
+                            eCommerce_gstin:
+                              type: string
+                              minLength: 15
+                              maxLength: 15
+                            igst_chargable:
+                              type: string
+                              enum: [ YES, NO ]
+                        eway_bill_detail:
+                          type: object
+                          required:
+                            - distance
+                          properties:
+                            transporter_id:
+                              type: string
+                              minLength: 3
+                              maxLength: 50
+                            transporter_name:
+                              type: string
+                              minLength: 3
+                              maxLength: 256
+                            transport_mode:
+                              type: string
+                              enum: [ ROAD, RAIL, AIR, SHIP ]
+                            distance:
+                              type: integer
+                              minimum: 0
+                              maximum: 4000
+                            transport_document_no:
+                              type: string
+                              minLength: 3
+                              maxLength: 50
+                            transport_document_date:
+                              type: string
+                              minLength: 10
+                              maxLength: 10
+                              pattern: DD/MM/YYYY
+                            vehicle_no:
+                              type: string
+                              minLength: 4
+                              maxLength: 20
+                            vehicle_type:
+                              type: string
+                              enum: [ REGULAR, OVER-DIMENSIONAL CARGO ]
+                        supplier_details:
+                          type: object
+                          properties:
+                            trade_name:
+                              type: string
+                              example: VA Tech Ventures Private Limited
+                              minLength: 1
+                              maxLength: 256
+                            b2b_id:
+                              type: string
+                              example: vatech_karnataka
+                              minLength: 1
+                              maxLength: 100
+                            gstin:
+                              type: string
+                              example: 29AAECV1948B2ZB
+                              minLength: 15
+                              maxLength: 15
+                            legal_name:
+                              type: string
+                              example: VA Tech Ventures Private Limited
+                              minLength: 1
+                              maxLength: 256
+                            state_code:
+                              type: string
+                              example: "16"
+                              minLength: 1
+                              maxLength: 2
+                            address:
+                              type: object
+                              required:
+                                - address_line1
+                                - city
+                                - state
+                                - country
+                                - pincode
+                              properties:
+                                address_line1:
+                                  type: string
+                                  example: ""
+                                  minLength: 1
+                                  maxLength: 256
+                                city:
+                                  type: string
+                                  example: ""
+                                  minLength: 1
+                                  maxLength: 256
+                                state:
+                                  type: string
+                                  enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
+                                country:
+                                  type: string
+                                  example: "INDIA"
+                                  enum: [ INDIA, India, india ]
+                                pincode:
+                                  type: string
+                                  example: "560066"
+                                  minLength: 6
+                                  maxLength: 6
+                            contact_number:
+                              type: object
+                              properties:
+                                type:
+                                  type: string
+                                  enum: [ MOBILE, EMAIL ]
+                                country_code:
+                                  type: string
+                                  example: "+91"
+                                  minLength: 2
+                                  maxLength: 5
+                                phone_number:
+                                  type: string
+                                  example: "7977380104"
+                                  minLength: 10
+                                  maxLength: 10
+                        buyer_details:
+                          type: object
+                          properties:
+                            trade_name:
+                              type: string
+                              example: VA Tech Ventures Private Limited
+                              minLength: 1
+                              maxLength: 256
+                            b2b_id:
+                              type: string
+                              example: vatech_karnataka
+                              minLength: 1
+                              maxLength: 100
+                            gstin:
+                              type: string
+                              example: 29AAECV1948B2ZB
+                              minLength: 15
+                              maxLength: 15
+                            legal_name:
+                              type: string
+                              example: VA Tech Ventures Private Limited
+                              minLength: 1
+                              maxLength: 256
+                            state_code:
+                              type: string
+                              example: "16"
+                              minLength: 1
+                              maxLength: 2
+                            address:
+                              type: object
+                              required:
+                                - address_line1
+                                - city
+                                - state
+                                - country
+                                - pincode
+                              properties:
+                                address_line1:
+                                  type: string
+                                  example: ""
+                                  minLength: 1
+                                  maxLength: 256
+                                city:
+                                  type: string
+                                  example: ""
+                                  minLength: 1
+                                  maxLength: 256
+                                state:
+                                  type: string
+                                  enum: [ ANDAMAN AND NICOBAR ISLANDS, ANDHRA PRADESH, ARUNACHAL PRADESH, ASSAM, BIHAR, CHANDIGARH, CHHATTISGARH, DADRA AND NAGAR HAVELI AND DAMAN AND DIU, DELHI, GOA, GUJARAT, HARYANA, HIMACHAL PRADESH, JAMMU & KASHMIR, JHARKHAND, KARNATAKA, KERALA, LADAKH, LAKSHADWEEP, MADHYA PRADESH, MAHARASHTRA, MANIPUR, MEGHALAYA, MIZORAM, NAGALAND, ODISHA, PUDUCHERRY, PUNJAB, RAJASTHAN, SIKKIM, TAMIL NADU, TELANGANA, TRIPURA, UTTAR PRADESH, UTTARAKHAND, WEST BENGAL ]
+                                country:
+                                  type: string
+                                  example: "INDIA"
+                                  enum: [ INDIA, India, india ]
+                                pincode:
+                                  type: string
+                                  example: "560066"
+                                  minLength: 6
+                                  maxLength: 6
+                            contact_number:
+                              type: object
+                              properties:
+                                type:
+                                  type: string
+                                  enum: [ MOBILE, EMAIL ]
+                                country_code:
+                                  type: string
+                                  example: "+91"
+                                  minLength: 2
+                                  maxLength: 5
+                                phone_number:
+                                  type: string
+                                  example: "7977380104"
+                                  minLength: 10
+                                  maxLength: 10
+
+                        item_lists:
+                          type: array
+                          items:
+                            type: object
+                            properties:
+                              serial_no:
+                                type: string
+                                example: "1"
+                                minLength: 1
+                                maxLength: 6
+                              product_description:
+                                type: string
+                                example: TnE Service
+                                minLength: 1
+                                maxLength: 256
+                              is_service:
+                                type: string
+                                example: YES
+                                enum: [ YES, NO ]
+                              hsn_code:
+                                type: string
+                                example: "997331"
+                                minLength: 4
+                                maxLength: 8
+                              quantity:
+                                type: number
+                                example: 1
+                                minimum: 0
+                                maximum: 9999999999.999
+                              unit:
+                                type: string
+                                example: UNT
+                                minLength: 3
+                                maxLength: 8
+                              unit_price:
+                                type: number
+                                example: 1
+                                minimum: 0
+                                maximum: 999999999999.999
+                              total_amount:
+                                type: number
+                                example: 10
+                                minimum: 0
+                                maximum: 999999999999.999
+                              assessment_amount:
+                                type: number
+                                example: 10
+                                minimum: 0
+                                maximum: 999999999999.999
+                              total_item_value:
+                                type: number
+                                example: 10
+                                minimum: 0
+                                maximum: 999999999999.999
+                              batch_details:
+                                type: object
+                                required:
+                                  - batch_number
+                                properties:
+                                  batch_number:
+                                    type: string
+                                    pattern: ^[a-zA-Z0-9]$
+                                    minLength: 3
+                                    maxLength: 20
+                                  expiry_date:
+                                    type: string
+                                    minLength: 10
+                                    maxLength: 10
+                                    pattern: DD/MM/YYYY
+                                  batch_warranty_date:
+                                    type: string
+                                    pattern: ^(0[1-9]|[12][0-9]|3[01])/(0[1-9]|1[012])/[0-9]{4}$
+                              item_value_details:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    type:
+                                      type: string
+                                      enum: [ DISCOUNT, PRETAXVAL, IGSTAMT, CGSTAMT, SGSTAMT, CESAMT, CESNONADVLAMT, STATECESAMT, STATECESNONADVLAMT, OTHCHRG ]
+                                    value:
+                                      type: number
+                                      minimum: 0
+                                      maximum: 999999999999.99
+                              attribute_detail:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    name:
+                                      minLength: 1
+                                      maxLength: 256
+                                      pattern: ^([^\"]){1,256}$
+                                    value:
+                                      minLength: 1
+                                      maxLength: 256
+                                      pattern: ^([^\"]){1,256}$
+                              other_taxes:
+                                type: array
+                                items:
+                                  type: object
+                                  properties:
+                                    name:
+                                      minLength: 2
+                                      maxLength: 30
+                                      pattern: ^([^\"]){2,30}$
+                                    rate:
+                                      type: number
+                                      minimum: 0
+                                      maximum: 999.999
+                                    amount:
+                                      type: number
+                        value_details:
+                          type: object
+                          properties:
+                            assessment_value:
+                              type: number
+                              example: 10
+                            total_invoice_value:
+                              type: number
+                              example: 10
+                            other_values:
+                              type: array
+                              items:
+                                type: object
+                                properties:
+                                  type:
+                                    type: string
+                                    enum: [ CGSTVAL, SGSTVAL, IGSTVAL, CESVAL, STCESVAL, DISCOUNT, OTHCHRG, RNDOFFAMT, TOTINVVALFC, NEGRNDOFFAMT, TCS, TDS ]
+                                  value:
+                                    type: number
+                                    minimum: 0
+                                    maximum: 999999999999.999
+                                  rate:
+                                    type: number
+                                    minimum: 0
+                                    maximum: 9999.999
+                                  section_applicable:
+                                    type: string
+                                    enum: [ 206CE, 206CI, 206CB, 206CD, 206CA, 206CF, 206CG, 206CH, 206CJ, 206CL, 206CK, 206CM, 206CN, 206CQ, 206CO, 206CR, 206CC, 206CP ]
+                        current_status:
+                          type: string
+                          example: CREATED
+                          enum: [ CREATED, SENT TO BUYER, ACCEPTED, REJECTED, UNDER REVIEW, CANCELLED, PARTIALLY PAID, FULLY PAID, CLOSED, ABANDONED, PAYMENT INITIATED, PARTIALLY PAID AND PAYMENT INITIATED ]
+                        new_status:
+                          type: string
+                          example: SENT TO BUYER
+                          enum: [ CREATED, SENT TO BUYER, ACCEPTED, REJECTED, UNDER REVIEW, CANCELLED, PARTIALLY PAID, FULLY PAID, CLOSED, ABANDONED, PAYMENT INITIATED, PARTIALLY PAID AND PAYMENT INITIATED ]
+                        invoice_id:
+                          type: string
+                          example: INV52b5bf34b4854464bea9564ada3d8669
+                          minLength: 35
+                          maxLength: 35
+                          pattern: ^[INV]{3}[A-Za-z0-9]{32,32}$
+                        invoice_due_amount:
+                          type: number
+                          format: float
+                          example: 10
+                          minimum: 0
+                          maximum: 999999999999.999
+                        invoice_remarks:
+                          type: string
+                          example: "Invoice accepted"
+                          minLength: 1
+                          maxLength: 256
+                        additional_infos:
+                          type: array
+                          items:
+                            type: object
+                            required:
+                              - name
+                              - value
+                            properties:
+                              name:
+                                type: string
+                                minLength: 1
+                                maxLength: 256
+                                pattern: ^([^\"]){1,256}$
+                              value:
+                                type: string
+                                minLength: 1
+                                maxLength: 256
+                                pattern: ^([^\"]){1,256}$
+                  status:
+                    type: string
+                    example: SUCCESS
+                    enum: [ SUCCESS, FAILURE ]
+                  msg:
+                    type: string
+                    example: ""
+                  code:
+                    type: string
+                    example: ""
+
+        400:
+          description: unable to make req pay
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  request_id:
+                    type: string
+                    example: "3ab43aa0-7187-44b1-8371-5fa448841da3"
+                    description: request id
+                  message:
+                    type: string
+                    example: "webhook not received from central unit"
+                    description: error message
+                  code:
+                    type: string
+                    example: "B2B010"
+                    description: error code
+        "500":
+          description: Internal server error
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  msg:
+                    type: string
+                    example: "Internal server error"
+
   /b2b/v1/invoice/{invoice_id}/fetch:
     get:
       summary: Fetch Invoice Details
